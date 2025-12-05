@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class CustomButton extends StatelessWidget {
   final String title;
   final VoidCallback onPressed;
-  final Color? color;       // optional button color
-  final Color? textColor;   // optional text color
-  final bool showSnackBar;  // optional: show SnackBar when clicked
+  final Color? color;       
+  final Color? textColor;   
+  final bool showSnackBar;  
 
   const CustomButton({
     super.key,
@@ -20,7 +20,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50, // fixed height for better UI
+      height: 50, 
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: color ?? Colors.orange,
