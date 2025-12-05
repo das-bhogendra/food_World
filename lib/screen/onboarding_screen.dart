@@ -12,23 +12,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int pageIndex = 0;
 
-  final List<Map<String, String>> pages = [
-    {
-      "title": "Order Delicious and tasty Food",
-      "subtitle": "Choose from top restaurants near you.",
-      "image": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png"
-    },
-    {
-      "title": "Fast Home Delivery",
-      "subtitle": "Hot & fresh meals delivered on time!",
-      "image": "https://cdn-icons-png.flaticon.com/512/4151/4151403.png"
-    },
-    {
-      "title": "Easy & Secure Payments",
-      "subtitle": "Pay via eSewa, Khalti or Cash on Delivery.",
-      "image": "https://cdn-icons-png.flaticon.com/512/891/891462.png"
-    },
-  ];
+  
+  final List<Map<String, String>> featureData = [
+  {
+    "title": "Order Delicious and Tasty Food",
+    "subtitle": "Choose from top restaurants near you.",
+    "image": "assets/images/order_food.jpg"
+  },
+  {
+    "title": "Fast Home Delivery",
+    "subtitle": "Hot & fresh meals delivered on time!",
+    "image": "assets/images/fast_delivery.jpg"
+  },
+  {
+    "title": "Easy & Secure Payments",
+    "subtitle": "Pay via eSewa, Khalti or Cash on Delivery.",
+    "image": "assets/images/secure_payment.jpg"
+  },
+];
 
   @override
   Widget build(BuildContext context) {
