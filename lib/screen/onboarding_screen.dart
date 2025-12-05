@@ -14,7 +14,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> pages = [
     {
-      "title": "Order Delicious Food",
+      "title": "Order Delicious and tasty Food",
       "subtitle": "Choose from top restaurants near you.",
       "image": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png"
     },
