@@ -12,24 +12,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int pageIndex = 0;
 
-  
   final List<Map<String, String>> featureData = [
-  {
-    "title": "Order Delicious and Tasty Food",
-    "subtitle": "Choose from top restaurants near you.",
-    "image": "assets/images/order_food.jpg"
-  },
-  {
-    "title": "Fast Home Delivery",
-    "subtitle": "Hot & fresh meals delivered on time!",
-    "image": "assets/images/fast_delivery.jpg"
-  },
-  {
-    "title": "Easy & Secure Payments",
-    "subtitle": "Pay via eSewa, Khalti or Cash on Delivery.",
-    "image": "assets/images/secure_payment.jpg"
-  },
-];
+    {
+      "title": "Order Delicious and Tasty Food",
+      "subtitle": "Choose from top restaurants near you.",
+      "image": "assets/images/order_food.jpg"
+    },
+    {
+      "title": "Fast Home Delivery",
+      "subtitle": "Hot & fresh meals delivered on time!",
+      "image": "assets/images/fast_delivery.jpg"
+    },
+    {
+      "title": "Easy & Secure Payments",
+      "subtitle": "Pay via eSewa, Khalti or Cash on Delivery.",
+      "image": "assets/images/secure_payment.jpg"
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Expanded(
             child: PageView.builder(
               controller: _controller,
-              itemCount: pages.length,
+              itemCount: featureData.length,
               onPageChanged: (index) {
                 setState(() => pageIndex = index);
               },
@@ -50,21 +49,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.network(pages[index]["image"]!, height: 220),
+                      Image.asset(
+                        featureData[index]["image"]!,
+                        height: 220,
+                      ),
                       const SizedBox(height: 25),
                       Text(
-                        pages[index]["title"]!,
+                        featureData[index]["title"]!,
                         style: const TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange),
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange,
+                        ),
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        pages[index]["subtitle"]!,
+                        featureData[index]["subtitle"]!,
                         textAlign: TextAlign.center,
-                        style:
-                            const TextStyle(fontSize: 17, color: Colors.black54),
+                        style: const TextStyle(
+                          fontSize: 17,
+                          color: Colors.black54,
+                        ),
                       ),
                     ],
                   ),
@@ -77,7 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
-              pages.length,
+              featureData.length,
               (index) => AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 height: 10,
@@ -104,10 +109,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
+                        builder: (context) => const LoginScreen(),
+                      ),
                     );
                   },
-                  child: const Text("Skip", style: TextStyle(fontSize: 18)),
+                  child: const Text(
+                    "Skip",
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
 
                 // Next / Get Started
@@ -116,11 +125,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     backgroundColor: Colors.orange,
                   ),
                   onPressed: () {
-                    if (pageIndex == pages.length - 1) {
+                    if (pageIndex == featureData.length - 1) {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
+                          builder: (context) => const LoginScreen(),
+                        ),
                       );
                     } else {
                       _controller.nextPage(
@@ -130,7 +140,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     }
                   },
                   child: Text(
-                    pageIndex == pages.length - 1
+                    pageIndex == featureData.length - 1
                         ? "Get Started"
                         : "Next",
                     style: const TextStyle(fontSize: 18),
