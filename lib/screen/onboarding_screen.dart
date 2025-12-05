@@ -54,7 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       Text(
                         pages[index]["title"]!,
                         style: const TextStyle(
-                            fontSize: 28,
+                            fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: Colors.orange),
                       ),
@@ -80,11 +80,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               (index) => AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 height: 10,
-                width: pageIndex == index ? 25 : 10,
+                width: pageIndex == index ? 30 : 12,
                 margin: const EdgeInsets.symmetric(horizontal: 5),
                 decoration: BoxDecoration(
                   color: pageIndex == index ? Colors.orange : Colors.grey,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(25),
                 ),
               ),
             ),
