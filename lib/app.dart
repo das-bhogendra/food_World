@@ -3,6 +3,7 @@ import 'package:food_mandu/screen/splash_screen.dart';
 
 
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
