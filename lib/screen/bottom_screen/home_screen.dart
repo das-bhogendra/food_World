@@ -8,6 +8,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: const Color(0xffFFF7F3),
       body: SafeArea(
@@ -15,29 +17,32 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
+              _buildHeader(theme),
               const SizedBox(height: 20),
 
-              _buildSectionTitle("Main Dishes", context, isClickable: true),
-              _buildFoodCard(
+              _sectionTitle("Main Dishes", context, theme),
+              _foodCard(
                 image: "assets/images/noodles.jpg",
                 rating: "4.9 (355 ratings)",
                 price: "Starts at ₦2500",
                 tag: "FREE DRINK",
+                theme: theme,
               ),
 
-              _buildSectionTitle("Best Sellers", context, isClickable:true ),
-              _buildFoodCard(
+              _sectionTitle("Best Sellers", context, theme),
+              _foodCard(
                 image: "assets/images/pizza.jpg",
                 rating: "4.8 (105 ratings)",
                 price: "Starts at ₦2000",
+                theme: theme,
               ),
 
-              _buildSectionTitle("Discounted Offers", context, isClickable:true),
-              _buildFoodCard(
+              _sectionTitle("Discounted Offers", context, theme),
+              _foodCard(
                 image: "assets/images/burger.jpg",
                 rating: "4.6 (500 ratings)",
                 price: "Starts from ₦500",
+                theme: theme,
               ),
 
               const SizedBox(height: 30),
@@ -48,50 +53,44 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 🔴 HEADER
-  Widget _buildHeader() {
+  
+  Widget _buildHeader(ThemeData theme) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
         color: Color(0xffB33B2E),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
       ),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
-              Icon(Icons.menu, color: Colors.white, size: 28),
-              Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 28),
+              Icon(Icons.menu, color: Colors.white),
+              Icon(Icons.shopping_bag_outlined, color: Colors.white),
             ],
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             "Welcome",
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: theme.textTheme.headlineSmall
+                ?.copyWith(color: Colors.white),
           ),
           const SizedBox(height: 6),
-          const Text(
+          Text(
             "Homemade meals prepared with\nlove. Richest ingredients.",
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white70),
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(color: Colors.white70),
           ),
           const SizedBox(height: 16),
-          _buildSearchBar(),
+          _searchBar(),
         ],
       ),
     );
   }
 
-  // 🔍 SEARCH BAR
-  Widget _buildSearchBar() {
+  Widget _searchBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
@@ -108,59 +107,37 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 📌 SECTION TITLE
-  Widget _buildSectionTitle(String title, BuildContext context, {bool isClickable = false}) {
-    Widget textWidget = Text(
-      title,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-
-    // Wrap with GestureDetector only if isClickable is true
-    if (isClickable) {
-    textWidget = GestureDetector(
-      onTap: () {
-        if (title == "Main Dishes") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const MainDishesScreen(),
-            ),
-          );
-        } else if (title == "Best Sellers") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const BestSellersScreen(),
-            ),
-          );
-        }else if (title == "Discounted Offers") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const DiscountOfferScreen(),
-
-            ),
-            );
-        }
-      },
-      child: textWidget,
-    );
-  }
-
+  
+  Widget _sectionTitle(String title, BuildContext context, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: textWidget,
+      child: GestureDetector(
+        onTap: () {
+          if (title == "Main Dishes") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const MainDishesScreen()));
+          } else if (title == "Best Sellers") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const BestSellersScreen()));
+          } else {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const DiscountOfferScreen()));
+          }
+        },
+        child: Text(
+          title,
+          style: theme.textTheme.titleLarge,
+        ),
+      ),
     );
   }
 
-  // 🍽 FOOD CARD
-  Widget _buildFoodCard({
+  
+  Widget _foodCard({
     required String image,
     required String rating,
     required String price,
+    required ThemeData theme,
     String? tag,
   }) {
     return Padding(
@@ -173,7 +150,6 @@ class HomeScreen extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
               blurRadius: 10,
-              offset: const Offset(0, 5),
             ),
           ],
         ),
@@ -183,9 +159,8 @@ class HomeScreen extends StatelessWidget {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20)),
                   child: Image.asset(
                     image,
                     height: 180,
@@ -197,22 +172,12 @@ class HomeScreen extends StatelessWidget {
                   Positioned(
                     right: 12,
                     bottom: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
+                    child: Chip(
+                      backgroundColor: Colors.red,
+                      label: Text(
                         tag,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: Colors.white),
                       ),
                     ),
                   ),
@@ -233,7 +198,8 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     price,
-                    style: const TextStyle(color: Colors.red),
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(color: Colors.red),
                   ),
                 ],
               ),

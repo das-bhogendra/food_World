@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
 
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: const Color.fromRGBO(145, 61, 61, 1),
         elevation: 0,
         centerTitle: true,
         title: const Text(
@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
 
               const Text(
-                "Welcome Back! 👋",
+                "Welcome login page ",
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     MaterialPageRoute(builder: (context) => const BottomScreenLayout()),
                   );
                 },
-                color: Colors.orange,
+                color: const Color.fromRGBO(143, 59, 59, 1),
                 textColor: Colors.white,
               ),
 
@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     "Don't have an account? Register",
                     style: TextStyle(
                       fontSize: 15,
-                      color: Colors.orange,
+                      color: Colors.black,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

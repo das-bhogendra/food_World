@@ -5,14 +5,17 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: const Color(0xffFFF7F3),
       appBar: AppBar(
-        backgroundColor: const Color(0xffB33B2E),
-        elevation: 0,
-        title: const Text(
+        title: Text(
           "My Cart",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
@@ -35,14 +38,15 @@ class CartScreen extends StatelessWidget {
               ],
             ),
           ),
-          _buildCheckoutSection(),
+          _checkoutSection(context),
         ],
       ),
     );
   }
 
-  // 🔻 Checkout Section
-  Widget _buildCheckoutSection() {
+  Widget _checkoutSection(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
@@ -51,26 +55,21 @@ class CartScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _priceRow("Subtotal", "₦4500"),
+          _priceRow(context, "Subtotal", "₦4500"),
           const SizedBox(height: 8),
-          _priceRow("Delivery", "₦500"),
+          _priceRow(context, "Delivery", "₦500"),
           const Divider(height: 30),
-          _priceRow("Total", "₦5000", isBold: true),
+          _priceRow(context, "Total", "₦5000", isBold: true),
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xffB33B2E),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
               onPressed: () {},
-              child: const Text(
+              child: Text(
                 "Checkout",
-                style: TextStyle(fontSize: 18),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(color: Colors.white),
               ),
             ),
           ),
@@ -79,22 +78,23 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _priceRow(String title, String value, {bool isBold = false}) {
+  Widget _priceRow(BuildContext context, String title, String value,
+      {bool isBold = false}) {
+    final theme = Theme.of(context);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            fontSize: isBold ? 18 : 16,
           ),
         ),
         Text(
           value,
-          style: TextStyle(
+          style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            fontSize: isBold ? 18 : 16,
             color: Colors.red,
           ),
         ),
@@ -118,6 +118,8 @@ class CartItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(12),
@@ -150,30 +152,23 @@ class CartItemCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: theme.textTheme.bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   price,
-                  style: const TextStyle(color: Colors.red),
+                  style:
+                      theme.textTheme.bodyMedium?.copyWith(color: Colors.red),
                 ),
               ],
             ),
           ),
           Column(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.add_circle, color: Colors.red),
-                onPressed: () {},
-              ),
-              const Text("1"),
-              IconButton(
-                icon: const Icon(Icons.remove_circle_outline),
-                onPressed: () {},
-              ),
+            children: const [
+              Icon(Icons.add_circle, color: Colors.red),
+              Text("1"),
+              Icon(Icons.remove_circle_outline),
             ],
           ),
         ],

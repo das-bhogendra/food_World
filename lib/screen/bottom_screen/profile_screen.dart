@@ -5,34 +5,33 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: const Color(0xffFFF7F3),
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(),
+            _buildHeader(theme),
             const SizedBox(height: 20),
-            _buildProfileOptions(),
+            _buildProfileOptions(theme),
           ],
         ),
       ),
     );
   }
 
-  // 🔴 Header with Avatar
-  Widget _buildHeader() {
+  
+  Widget _buildHeader(ThemeData theme) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
         color: Color(0xffB33B2E),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
       ),
       child: Column(
-        children: const [
-          CircleAvatar(
+        children: [
+          const CircleAvatar(
             radius: 45,
             backgroundColor: Colors.white,
             child: Icon(
@@ -41,19 +40,17 @@ class ProfileScreen extends StatelessWidget {
               color: Color(0xffB33B2E),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             "Bhogendra Kumar Das",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: theme.textTheme.titleLarge
+                ?.copyWith(color: Colors.white),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             "bhogendra@email.com",
-            style: TextStyle(color: Colors.white70),
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(color: Colors.white70),
           ),
         ],
       ),
@@ -61,7 +58,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   // 📌 Profile Options
-  Widget _buildProfileOptions() {
+  Widget _buildProfileOptions(ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -112,6 +109,8 @@ class ProfileTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
@@ -128,11 +127,11 @@ class ProfileTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(
           icon,
-          color: isLogout ? Colors.red : Colors.black,
+          color: isLogout ? Colors.red : theme.iconTheme.color,
         ),
         title: Text(
           title,
-          style: TextStyle(
+          style: theme.textTheme.bodyLarge?.copyWith(
             color: isLogout ? Colors.red : Colors.black,
             fontWeight: FontWeight.w500,
           ),
