@@ -57,7 +57,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // 📌 Profile Options
+  
   Widget _buildProfileOptions(ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -94,7 +94,7 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-// 🧩 Profile Option Tile
+
 class ProfileTile extends StatelessWidget {
   final IconData icon;
   final String title;
