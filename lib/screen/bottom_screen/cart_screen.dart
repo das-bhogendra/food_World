@@ -103,7 +103,7 @@ class CartScreen extends StatelessWidget {
   }
 }
 
-// 🧾 Cart Item Card
+
 class CartItemCard extends StatelessWidget {
   final String image;
   final String title;
