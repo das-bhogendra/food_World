@@ -4,7 +4,7 @@ ThemeData getApplicationTheme() {
   return ThemeData(
     useMaterial3: true,
 
-    // Default font for whole app
+  
     fontFamily: 'OpenSans regular',
 
     colorScheme: ColorScheme.fromSeed(

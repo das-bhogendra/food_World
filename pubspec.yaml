@@ -76,13 +76,13 @@ flutter:
   fonts:
      - family: OpenSans Bold
        fonts:
-         - asset: asset/fonts/OpenSans-Bold.ttf
+         - asset: assets/scans/OpenSans-Bold.ttf
      - family: OpenSans italic
        fonts:
-        - asset: asset/fonts/OpenSans-italic.ttf
+        - asset: assets/scans/OpenSans-Bolditalic.ttf
      - family: OpenSans regular
        fonts:
-         - asset: asset/fonts/OpenSans-regular.ttf
+         - asset: assets/scans/OpenSans-Regular.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:
