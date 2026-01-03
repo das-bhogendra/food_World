@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String title;
-  final VoidCallback onPressed;
-  final Color? color;       
-  final Color? textColor;   
-  final bool showSnackBar;  
+  final Future<void> Function()? onPressed; // allow async
+  final Color? color;
+  final Color? textColor;
+  final bool showSnackBar;
 
   const CustomButton({
     super.key,
@@ -13,14 +13,14 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.color,
     this.textColor,
-    this.showSnackBar = false, // default false
+    this.showSnackBar = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50, 
+      height: 50,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: color ?? Colors.orange,
@@ -28,14 +28,16 @@ class CustomButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        onPressed: () {
-          if (showSnackBar) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("$title clicked")),
-            );
-          }
-          onPressed();
-        },
+        onPressed: onPressed == null
+            ? null
+            : () async {
+                if (showSnackBar) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("$title clicked")),
+                  );
+                }
+                await onPressed!(); // call async function
+              },
         child: Text(
           title,
           style: TextStyle(

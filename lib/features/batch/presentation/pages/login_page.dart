@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_text_field.dart';
-import '../widgets/custom_button.dart';
-import '../core/services/hive/hive_service.dart';
-import 'register_screen.dart';
-import 'buttom_screen.dart';
-import '../core/utils/snackbar_utils.dart';
+import 'package:food_mandu/core/services/hive/hive_service.dart';
+import 'package:food_mandu/core/utils/snackbar_utils.dart';
+import 'package:food_mandu/screen/buttom_screen.dart';
+import 'package:food_mandu/screen/register_screen.dart';
+import 'package:food_mandu/widgets/custom_button.dart';
+import 'package:food_mandu/widgets/custom_text_field.dart';
 
-class LoginScreen extends StatefulWidget {
-  final HiveService hiveService; // ✅ Add hiveService
-
-  const LoginScreen({super.key, required this.hiveService}); // ✅ require it
+class LoginPage extends StatefulWidget {
+  final HiveService hiveService; // ✅ Use the same HiveService instance
+  const LoginPage({super.key, required this.hiveService});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginPageState extends State<LoginPage> {
   final _email = TextEditingController();
   final _password = TextEditingController();
   bool _isLoading = false;
@@ -42,13 +41,19 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      // ✅ Use the injected HiveService instance
       final user = await widget.hiveService.loginUser(email, password);
 
       if (user != null) {
+        print("✅ Login Success:");
+        print("Current User ID: ${widget.hiveService.currentUserId}");
+        print("Email: ${user.email}");
+
         if (!mounted) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const BottomScreenLayout()),
+          MaterialPageRoute(
+              builder: (context) => const BottomScreenLayout()),
         );
       } else {
         SnackbarUtils.showError(context, "Invalid email or password");
@@ -69,8 +74,8 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RegisterScreen(hiveService: widget.hiveService), // ✅ Correctly pass hiveService
-      ),
+          builder: (context) =>
+              RegisterScreen(hiveService: widget.hiveService)), // pass same instance
     );
   }
 
@@ -78,6 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(145, 61, 61, 1),
         elevation: 0,
@@ -91,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -98,6 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
+
               const Text(
                 "Welcome login page",
                 style: TextStyle(
@@ -106,7 +114,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.black87,
                 ),
               ),
+
               const SizedBox(height: 10),
+
               const Text(
                 "Login to continue to FoodWorld",
                 style: TextStyle(
@@ -114,27 +124,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.black54,
                 ),
               ),
+
               const SizedBox(height: 30),
+
               CustomTextField(
                 controller: _email,
                 label: "Email",
                 hint: "Enter your email",
               ),
+
               const SizedBox(height: 15),
+
               CustomTextField(
                 controller: _password,
                 label: "Password",
                 hint: "Enter your password",
                 obscureText: true,
               ),
+
               const SizedBox(height: 30),
+
+              // ================= LOGIN BUTTON =================
               CustomButton(
                 title: _isLoading ? "Logging in..." : "Login",
                 onPressed: _isLoading ? null : _handleLogin,
                 color: const Color.fromRGBO(143, 59, 59, 1),
                 textColor: Colors.white,
               ),
+
               const SizedBox(height: 20),
+
               Center(
                 child: TextButton(
                   onPressed: _navigateToRegister,

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'onboarding_screen.dart';
-
+import 'package:food_mandu/core/services/hive/hive_service.dart';
 
 // Splash screen for FoodWorld App
-
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final HiveService hiveService; // ✅ Add HiveService
+
+  const SplashScreen({super.key, required this.hiveService});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -19,7 +20,9 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+        MaterialPageRoute(
+          builder: (context) => OnboardingScreen(hiveService: widget.hiveService), // ✅ Pass HiveService
+        ),
       );
     });
   }

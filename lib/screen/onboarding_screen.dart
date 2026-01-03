@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:food_mandu/core/services/hive/hive_service.dart';
 import 'login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final HiveService hiveService;
+  const OnboardingScreen({super.key, required this.hiveService});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -109,7 +111,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
+                        builder: (context) =>
+                            LoginScreen(hiveService: widget.hiveService),
                       ),
                     );
                   },
@@ -129,7 +132,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
+                          builder: (context) =>
+                              LoginScreen(hiveService: widget.hiveService),
                         ),
                       );
                     } else {
