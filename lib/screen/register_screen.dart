@@ -1,179 +1,152 @@
 import 'package:flutter/material.dart';
-import 'package:food_mandu/core/services/hive/hive_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/services/hive/hive_service.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
-import 'login_screen.dart';
 import '../core/utils/snackbar_utils.dart';
-import 'package:food_mandu/features/auth/data/models/auth_hive_model.dart';
+import 'login_screen.dart';
+import 'package:food_mandu/features/auth/presentation/view_model/auth_viewmodel.dart';
+import 'package:food_mandu/features/auth/presentation/state/auth_state.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   final HiveService hiveService;
+
   const RegisterScreen({super.key, required this.hiveService});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final _name = TextEditingController();
-  final _email = TextEditingController();
-  final _password = TextEditingController();
-  bool _isLoading = false;
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
-    _name.dispose();
-    _email.dispose();
-    _password.dispose();
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _usernameController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  /// ================= HANDLE REGISTER =================
+  // ================= HANDLE REGISTER =================
   Future<void> _handleRegister() async {
-    final name = _name.text.trim();
-    final email = _email.text.trim();
-    final password = _password.text.trim();
+    final fullName = _fullNameController.text.trim();
+    final email = _emailController.text.trim();
+    final username = _usernameController.text.trim();
+    final phone = _phoneController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
 
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      SnackbarUtils.showError(context, "All fields are required");
+    if (fullName.isEmpty || email.isEmpty || username.isEmpty || password.isEmpty) {
+      SnackbarUtils.showError(context, "All required fields must be filled");
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    // Call register in AuthViewModel
+    await ref.read(authViewModelProvider.notifier).register(
+      fullName: fullName,
+      email: email,
+      username: username,
+      password: password,
+      confirmPassword: confirmPassword,
+      role: "user",
+      phoneNumber: phone.isEmpty ? null : phone,
+      batchId: null, // optional
+    );
+  }
 
-    try {
-      // Check if email already exists
-      final emailExists = await widget.hiveService.isEmailExists(email);
-      if (emailExists) {
-        SnackbarUtils.showError(context, "Email already registered");
-        return;
-      }
-
-      // Create AuthHiveModel
-      final newUser = AuthHiveModel(
-        fullName: name,
-        email: email,
-        username: email.split("@")[0],
-        password: password,
-      );
-
-      // Register user in Hive
-      await widget.hiveService.registerUser(newUser);
-      print("✅ Registered User: ${newUser.email}");
-
-      // Navigate to LoginScreen
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginScreen(hiveService: widget.hiveService),
-        ),
-      );
-
-      SnackbarUtils.showSuccess(context, "Registration successful!");
-    } catch (e) {
-      SnackbarUtils.showError(context, "Registration failed: ${e.toString()}");
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+  // Navigate to LoginScreen
+  void _navigateToLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => LoginScreen(hiveService: widget.hiveService),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authViewModelProvider);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (authState.status == AuthStatus.registered) {
+        SnackbarUtils.showSuccess(context, "Registration successful");
+        _navigateToLogin();
+      } else if (authState.status == AuthStatus.error &&
+          authState.errorMessage != null) {
+        SnackbarUtils.showError(context, authState.errorMessage!);
+      }
+    });
+
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 66, 31, 31),
-        elevation: 0,
+        title: const Text("Register", style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        title: const Text(
-          "Register",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              const Text(
-                "Create Account",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            const Text("Create Account", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            const Text("Sign up to start using FoodWorld", style: TextStyle(color: Colors.black54)),
+            const SizedBox(height: 30),
+
+            // Full Name
+            CustomTextField(controller: _fullNameController, label: "Full Name", hint: "Enter full name"),
+            const SizedBox(height: 15),
+
+            // Email
+            CustomTextField(controller: _emailController, label: "Email", hint: "Enter email", keyboardType: TextInputType.emailAddress),
+            const SizedBox(height: 15),
+
+            // Username
+            CustomTextField(controller: _usernameController, label: "Username", hint: "Choose username"),
+            const SizedBox(height: 15),
+
+            // Phone Number (Optional)
+            CustomTextField(controller: _phoneController, label: "Phone Number (Optional)", hint: "98XXXXXXXX", keyboardType: TextInputType.phone),
+            const SizedBox(height: 15),
+
+            // Password
+            CustomTextField(controller: _passwordController, label: "Password", hint: "Enter password", obscureText: true),
+            const SizedBox(height: 30),
+
+            // confirmPassword
+
+            // Password
+            CustomTextField(controller: _confirmPasswordController, label: " confirmPassword", hint: "confirm password", obscureText: true),
+            const SizedBox(height: 30),
+
+
+            // Register Button
+            CustomButton(
+              title: authState.status == AuthStatus.loading ? "Creating..." : "Create Account",
+              onPressed: authState.status == AuthStatus.loading ? null : _handleRegister,
+              color: const Color.fromARGB(255, 42, 15, 15),
+              textColor: Colors.white,
+            ),
+
+            const SizedBox(height: 20),
+            Center(
+              child: TextButton(
+                onPressed: _navigateToLogin,
+                child: const Text("Already have an account? Login"),
               ),
-              const SizedBox(height: 10),
-              const Text(
-                "Sign up to start using FoodWorld",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
-              ),
-              const SizedBox(height: 30),
-              CustomTextField(
-                controller: _name,
-                label: "Full Name",
-                hint: "Enter your full name",
-              ),
-              const SizedBox(height: 15),
-              CustomTextField(
-                controller: _email,
-                label: "Email",
-                hint: "Enter your email",
-              ),
-              const SizedBox(height: 15),
-              CustomTextField(
-                controller: _password,
-                label: "Password",
-                hint: "Enter your password",
-                obscureText: true,
-              ),
-              const SizedBox(height: 30),
-              CustomButton(
-                title: _isLoading ? "Creating..." : "Create Account",
-                onPressed: _isLoading ? null : _handleRegister,
-                color: const Color.fromARGB(255, 42, 15, 15),
-                textColor: Colors.white,
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            LoginScreen(hiveService: widget.hiveService),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    "Already have an account? Login",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Color.fromARGB(255, 62, 26, 26),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

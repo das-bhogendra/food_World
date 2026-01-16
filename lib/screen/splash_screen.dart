@@ -1,34 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'onboarding_screen.dart';
-import 'package:food_mandu/core/services/hive/hive_service.dart';
+import 'package:food_mandu/core/providers/shared_prefs_provider.dart';
 
 // Splash screen for FoodWorld App
-class SplashScreen extends StatefulWidget {
-  final HiveService hiveService; // ✅ Add HiveService
-
-  const SplashScreen({super.key, required this.hiveService});
+class SplashScreen extends ConsumerWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hiveService = ref.watch(hiveServiceProvider);
 
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OnboardingScreen(hiveService: widget.hiveService), // ✅ Pass HiveService
-        ),
-      );
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OnboardingScreen(hiveService: hiveService),
+          ),
+        );
+      }
     });
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.orange,
       body: Center(
