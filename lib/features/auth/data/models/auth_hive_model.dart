@@ -28,9 +28,15 @@ class AuthHiveModel extends HiveObject {
   final String username;
 
   @HiveField(6)
-  final String? password;
+  final String password;
 
   @HiveField(7)
+  final String confirmPassword;
+
+  @HiveField(8)
+  final String role;
+
+  @HiveField(9)
   final String? profilePicture;
 
   AuthHiveModel({
@@ -40,7 +46,9 @@ class AuthHiveModel extends HiveObject {
     this.phoneNumber,
     this.batchId,
     required this.username,
-    this.password,
+    required this.password,
+    required this.confirmPassword,
+    required this.role,
     this.profilePicture,
   }) : authId = authId ?? const Uuid().v4();
 
@@ -54,6 +62,8 @@ class AuthHiveModel extends HiveObject {
       batchId: entity.batchId,
       username: entity.username,
       password: entity.password,
+      confirmPassword:entity.confirmPassword,
+      role:entity.role,
       profilePicture: entity.profilePicture,
     );
   }
@@ -67,7 +77,9 @@ class AuthHiveModel extends HiveObject {
       phoneNumber: phoneNumber,
       batchId: batchId,
       username: username,
-      password: password,
+      password:password ,
+      confirmPassword:confirmPassword,
+      role: role,
       profilePicture: profilePicture,
     );
   }
