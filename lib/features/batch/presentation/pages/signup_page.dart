@@ -15,6 +15,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _phoneController = TextEditingController(); // optional phone
   bool _isLoading = false;
 
   @override
@@ -22,6 +24,8 @@ class _RegisterPageState extends State<RegisterPage> {
     _fullNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -29,32 +33,46 @@ class _RegisterPageState extends State<RegisterPage> {
     final fullName = _fullNameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+    final phoneNumber = _phoneController.text.trim();
 
-    if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("All fields are required")));
+    // Validation
+    if (fullName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("All fields are required")),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Passwords do not match")),
+      );
       return;
     }
 
     setState(() => _isLoading = true);
 
     try {
-      final user = await widget.hiveService.registerUser(
-        // Assuming your Hive model
+      // Register user via HiveService (or API service)
+      await widget.hiveService.registerUser(
         AuthHiveModel(
           fullName: fullName,
           email: email,
-          username: email, // username = email
+          username: email, // backend expects username, using email
           password: password,
+          confirmPassword: confirmPassword,
+          role: "user",
+          phoneNumber: phoneNumber.isNotEmpty ? phoneNumber : null,
         ),
       );
+
+      if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Account created successfully!")),
       );
 
-      // Navigate to LoginPage and pass hiveService
-      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -62,8 +80,9 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       );
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Registration failed: ${e.toString()}")),
+        SnackBar(content: Text("Registration failed: $e")),
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -74,17 +93,40 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Register")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            TextField(controller: _fullNameController, decoration: const InputDecoration(labelText: "Full Name")),
-            TextField(controller: _emailController, decoration: const InputDecoration(labelText: "Email")),
-            TextField(controller: _passwordController, obscureText: true, decoration: const InputDecoration(labelText: "Password")),
+            TextField(
+              controller: _fullNameController,
+              decoration: const InputDecoration(labelText: "Full Name"),
+            ),
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(labelText: "Email"),
+            ),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: "Password"),
+            ),
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: "Confirm Password"),
+            ),
+            TextField(
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(labelText: "Phone Number (optional)"),
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _isLoading ? null : _handleRegister,
-              child: _isLoading ? const CircularProgressIndicator() : const Text("Register"),
+              child: _isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text("Register"),
             ),
           ],
         ),
