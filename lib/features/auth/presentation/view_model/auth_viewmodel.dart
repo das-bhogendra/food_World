@@ -29,6 +29,8 @@ class AuthViewModel extends Notifier<AuthState> {
     String? batchId,
     required String username,
     required String password,
+    required String confirmPassword,
+    required String role,
   }) async {
     state = state.copyWith(status: AuthStatus.loading);
 
@@ -39,6 +41,8 @@ class AuthViewModel extends Notifier<AuthState> {
       batchId: batchId,
       username: username,
       password: password,
+      confirmPassword: confirmPassword,
+      role:role,
     );
 
     final result = await _registerUsecase(params);
