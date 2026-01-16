@@ -16,6 +16,8 @@ class RegisterUsecaseParams extends Equatable {
   final String? batchId;
   final String username;
   final String password;
+  final String confirmPassword;
+  final String role;
   final String? profilePicture;
 
   const RegisterUsecaseParams({
@@ -25,6 +27,8 @@ class RegisterUsecaseParams extends Equatable {
     this.batchId,
     required this.username,
     required this.password,
+    required this.confirmPassword,
+    required this.role,
     this.profilePicture,
   });
 
@@ -36,6 +40,8 @@ class RegisterUsecaseParams extends Equatable {
         batchId,
         username,
         password,
+        confirmPassword,
+        role,
         profilePicture,
       ];
 }
@@ -64,6 +70,8 @@ class RegisterUsecase
       batchId: params.batchId,
       username: params.username,
       password: params.password,
+      confirmPassword: params.confirmPassword,
+      role: params.role,
       profilePicture: params.profilePicture,
     );
 
