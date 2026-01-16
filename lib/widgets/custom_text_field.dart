@@ -5,6 +5,7 @@ class CustomTextField extends StatelessWidget {
   final String label;
   final String? hint;
   final bool obscureText;
+  final TextInputType keyboardType;
 
   const CustomTextField({
     super.key,
@@ -12,16 +13,18 @@ class CustomTextField extends StatelessWidget {
     required this.label,
     this.hint,
     this.obscureText = false,
-
+    this.keyboardType = TextInputType.text,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      keyboardType: TextInputType.number,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
+        hintText: hint,
         border: OutlineInputBorder(),
       ),
     );
