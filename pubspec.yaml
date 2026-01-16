@@ -15,16 +15,18 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # State Management
-  flutter_riverpod: ^3.0.3
-  riverpod_annotation: ^3.0.3
+  flutter_riverpod: ^3.1.0
+  riverpod_annotation: ^4.0.0
+  connectivity_plus: ^7.0.0
+  shared_preferences: ^2.1.1
 
   # Value Equality
-  equatable: ^2.0.5
+  equatable: ^2.0.8
 
   # Functional Programming
   dartz: ^0.10.1
 
-  # utilities
+  # Utilities
   uuid: ^4.3.3
 
   # Local Database (Offline Storage)
@@ -33,17 +35,21 @@ dependencies:
   path_provider: ^2.1.2
   path: ^1.9.0
 
+  # Networking / API
+  dio: ^5.3.1
+  dio_smart_retry: ^7.0.1
+  pretty_dio_logger: ^1.4.0
+  flutter_secure_storage: ^8.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
   # Code Generation
-  build_runner: ^2.4.9
+  build_runner: ^2.4.12
   hive_generator: ^2.0.1
-  
-  
 
 flutter:
   uses-material-design: true
