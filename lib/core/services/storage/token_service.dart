@@ -18,12 +18,12 @@ class TokenService {
     await _prefs.setString(_tokenKey, token);
   }
 
-  // Get token
+  
   Future<String?> getToken() async {
     return _prefs.getString(_tokenKey);
   }
 
-  // Remove token (for logout)
+  
   Future<void> removeToken() async {
     await _prefs.remove(_tokenKey);
   }
