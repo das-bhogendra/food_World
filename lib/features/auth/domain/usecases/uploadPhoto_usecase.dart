@@ -7,14 +7,15 @@ import 'package:food_mandu/core/usecases/app_usecase.dart';
 import 'package:food_mandu/features/auth/data/repositories/auth_repository.dart';
 import 'package:food_mandu/features/auth/domain/repositories/auth_repository.dart';
 
-/// ================= USECASE PARAMS =================
+
 class UploadPhotoUsecaseParams {
   final File photo;
 
   UploadPhotoUsecaseParams({required this.photo});
 }
 
-/// ================= PROVIDER =================
+
+
 final uploadPhotoUsecaseProvider =
     Provider<UploadPhotoUsecase>((ref) {
   final authRepository = ref.read(authRepositoryProvider);
