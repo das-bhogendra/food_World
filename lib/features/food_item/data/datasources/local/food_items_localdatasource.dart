@@ -3,7 +3,7 @@ import 'package:food_mandu/core/services/hive/food_items_hive_service.dart';
 import 'package:food_mandu/features/food_item/data/datasources/food_items_datasource.dart';
 import 'package:food_mandu/features/food_item/data/models/food_items_hive_model.dart';
 
-/// ================= PROVIDER =================
+
 final foodItemLocalDatasourceProvider =
     Provider<FoodItemLocalDatasource>((ref) {
   // Use the hive service variable properly
@@ -11,7 +11,7 @@ final foodItemLocalDatasourceProvider =
   return FoodItemLocalDatasource(hiveService: hiveService);
 });
 
-/// ================= DATASOURCE =================
+
 class FoodItemLocalDatasource implements IFoodItemsLocalDatasource {
   final FoodItemHiveService _hiveService;
 
