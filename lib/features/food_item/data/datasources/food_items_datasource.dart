@@ -14,7 +14,7 @@ abstract interface class IFoodItemsLocalDatasource {
 }
 
 abstract interface class IFoodItemsRemoteDataSource {
-  /// CRUD operations
+  
   Future<FoodItemApiModel> createFoodItem(FoodItemApiModel item);
   Future<FoodItemApiModel> updateFoodItem(FoodItemApiModel item);
   Future<bool> deleteFoodItem(String id);
