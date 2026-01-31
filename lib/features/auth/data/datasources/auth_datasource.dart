@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:food_mandu/features/auth/data/models/auth_api_model.dart';
 import 'package:food_mandu/features/auth/data/models/auth_hive_model.dart';
 
@@ -17,4 +19,5 @@ abstract interface class IAuthRemoteDatasource{
   Future<AuthApiModel?> register(AuthApiModel user);
   Future<AuthApiModel?> login (String email, String password);
   Future<AuthApiModel?> getUserById(String authId);
+  Future<String> uploadProfilePhoto(File photo);
 }

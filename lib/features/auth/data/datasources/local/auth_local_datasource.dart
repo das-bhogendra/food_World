@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_mandu/core/providers/shared_prefs_provider.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
-import 'package:food_mandu/features/auth/data/datasources/remote/auth_datasource.dart';
+import 'package:food_mandu/features/auth/data/datasources/auth_datasource.dart';
+
 import 'package:food_mandu/features/auth/data/models/auth_hive_model.dart';
 
 
@@ -11,7 +13,7 @@ final authLocalDatasourceProvider = Provider<AuthLocalDatasource>((ref) {
 });
 
 /// ================= DATASOURCE =================
-class AuthLocalDatasource implements IAuthDatasource {
+class AuthLocalDatasource implements IAuthLocalDatasource {
   final HiveService _hiveService;
 
   AuthLocalDatasource({required HiveService hiveService})

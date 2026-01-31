@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:food_mandu/core/error/failures.dart';
 import 'package:food_mandu/features/auth/domain/entities/auth_entity.dart';
+import 'dart:io';
 
 
 abstract interface class IAuthRepository{
@@ -8,4 +9,5 @@ abstract interface class IAuthRepository{
   Future<Either<Failure,AuthEntity>> login(String email, String password);
   Future<Either<Failure, AuthEntity>> getCurrentUser();
   Future<Either<Failure, bool>> logout();
+  Future<Either<Failure, String>> uploadProfilePhoto(File photo);
 }

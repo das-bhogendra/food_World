@@ -1,25 +1,27 @@
+import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/features/auth/domain/usecases/login_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/register_usecase.dart';
+import 'package:food_mandu/features/auth/domain/usecases/uploadphoto_usecase.dart';
 import 'package:food_mandu/features/auth/presentation/state/auth_state.dart';
 
-
-
-final authViewModelProvider = NotifierProvider<AuthViewModel,AuthState>(
-  () => AuthViewModel(),);
-
-/// ================= VIEW MODEL =================
+/// ================= AUTH NOTIFIER =================
 class AuthViewModel extends Notifier<AuthState> {
-  late final RegisterUsecase _registerUsecase;
-  late final LoginUsecase _loginUsecase;
+  final RegisterUsecase _registerUsecase;
+  final LoginUsecase _loginUsecase;
+  final UploadPhotoUsecase _uploadPhotoUsecase;
 
-  /// ================= INITIAL STATE =================
+  /// ✅ Constructor injection
+  AuthViewModel({
+    required RegisterUsecase registerUsecase,
+    required LoginUsecase loginUsecase,
+    required UploadPhotoUsecase uploadPhotoUsecase,
+  })  : _registerUsecase = registerUsecase,
+        _loginUsecase = loginUsecase,
+        _uploadPhotoUsecase = uploadPhotoUsecase;
+
   @override
-  AuthState build() {
-    _registerUsecase = ref.read(RegisterUsecaseProvider);
-    _loginUsecase = ref.read(LoginUsecaseProvider);
-    return const AuthState();
-  }
+  AuthState build() => const AuthState();
 
   /// ================= REGISTER =================
   Future<void> register({
@@ -42,7 +44,7 @@ class AuthViewModel extends Notifier<AuthState> {
       username: username,
       password: password,
       confirmPassword: confirmPassword,
-      role:role,
+      role: role,
     );
 
     final result = await _registerUsecase(params);
@@ -54,10 +56,8 @@ class AuthViewModel extends Notifier<AuthState> {
           errorMessage: failure.message,
         );
       },
-      (isRegistered) {
-        if (isRegistered) {
-          state = state.copyWith(status: AuthStatus.registered);
-        }
+      (_) {
+        state = state.copyWith(status: AuthStatus.registered);
       },
     );
   }
@@ -90,5 +90,34 @@ class AuthViewModel extends Notifier<AuthState> {
         );
       },
     );
+  }
+
+  /// ================= UPLOAD PROFILE PHOTO =================
+  Future<String?> uploadPhoto(File photo) async {
+    state = state.copyWith(status: AuthStatus.loaded);
+
+    final result = await _uploadPhotoUsecase(photo);
+
+    return result.fold(
+      (failure) {
+        state = state.copyWith(
+          status: AuthStatus.error,
+          errorMessage: failure.message,
+        );
+        return null;
+      },
+      (url) {
+        state = state.copyWith(
+          status: AuthStatus.loading,
+          uploadedPhotoUrl: url,
+        );
+        return url;
+      },
+    );
+  }
+
+  /// ================= CLEAR ERROR =================
+  void clearError() {
+    state = state.copyWith(errorMessage: null);
   }
 }

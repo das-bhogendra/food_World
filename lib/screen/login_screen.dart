@@ -6,7 +6,9 @@ import '../widgets/custom_button.dart';
 import '../core/utils/snackbar_utils.dart';
 import 'register_screen.dart';
 import 'buttom_screen.dart';
-import 'package:food_mandu/features/auth/presentation/view_model/auth_viewmodel.dart';
+
+import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
+
 import 'package:food_mandu/features/auth/presentation/state/auth_state.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {

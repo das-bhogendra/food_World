@@ -52,6 +52,33 @@ class AuthHiveModel extends HiveObject {
     this.profilePicture,
   }) : authId = authId ?? const Uuid().v4();
 
+  /// SAFE FROM JSON OR ENTITY
+  factory AuthHiveModel.safe({
+    String? authId,
+    String? fullName,
+    String? email,
+    String? phoneNumber,
+    String? batchId,
+    String? username,
+    String? password,
+    String? confirmPassword,
+    String? role,
+    String? profilePicture,
+  }) {
+    return AuthHiveModel(
+      authId: authId ?? const Uuid().v4(),
+      fullName: fullName ?? '',
+      email: email ?? '',
+      phoneNumber: phoneNumber,
+      batchId: batchId,
+      username: username ?? '',
+      password: password ?? '',
+      confirmPassword: confirmPassword ?? '',
+      role: role ?? 'user',
+      profilePicture: profilePicture,
+    );
+  }
+
   /// ================= FACTORY FROM ENTITY =================
   factory AuthHiveModel.fromEntity(AuthEntity entity) {
     return AuthHiveModel(
@@ -62,8 +89,8 @@ class AuthHiveModel extends HiveObject {
       batchId: entity.batchId,
       username: entity.username,
       password: entity.password,
-      confirmPassword:entity.confirmPassword,
-      role:entity.role,
+      confirmPassword: entity.confirmPassword,
+      role: entity.role,
       profilePicture: entity.profilePicture,
     );
   }
@@ -77,8 +104,8 @@ class AuthHiveModel extends HiveObject {
       phoneNumber: phoneNumber,
       batchId: batchId,
       username: username,
-      password:password ,
-      confirmPassword:confirmPassword,
+      password: password,
+      confirmPassword: confirmPassword,
       role: role,
       profilePicture: profilePicture,
     );

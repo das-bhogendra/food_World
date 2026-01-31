@@ -96,7 +96,7 @@ class ApiClient {
       {required FormData formData,
       Options? options,
       ProgressCallback? onSendProgress}) {
-    return _dio.post(path,
+    return _dio.request(path,
         data: formData, options: options, onSendProgress: onSendProgress);
   }
 }

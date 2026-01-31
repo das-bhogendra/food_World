@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dartz/dartz.dart';
+import 'dart:io';
+
 
 import 'package:food_mandu/core/error/failures.dart';
 import 'package:food_mandu/core/services/connectivity/network_info.dart';
@@ -129,6 +131,19 @@ class AuthRepository implements IAuthRepository {
       return const Right(true);
     } catch (e) {
       return Left(LocalDatabaseFailure(message: e.toString()));
+    }
+  }
+  @override
+  Future<Either<Failure, String>> uploadProfilePhoto(File photo) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final url = await _authRemoteDatasource.uploadProfilePhoto(photo);
+        return Right(url);
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure(message: 'No internet connection'));
     }
   }
 }

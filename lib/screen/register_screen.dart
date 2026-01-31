@@ -5,7 +5,9 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 import '../core/utils/snackbar_utils.dart';
 import 'login_screen.dart';
-import 'package:food_mandu/features/auth/presentation/view_model/auth_viewmodel.dart';
+
+import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
+
 import 'package:food_mandu/features/auth/presentation/state/auth_state.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -99,7 +101,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            const Text("Create Account", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+            const Text("Sign Up", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             const Text("Sign up to start using FoodWorld", style: TextStyle(color: Colors.black54)),
             const SizedBox(height: 30),

@@ -61,6 +61,11 @@ class UserSessionService {
     }
   }
 
+  /// 🔥 NEW: Update only profile picture (used after upload)
+  Future<void> updateProfilePicture(String profilePicture) async {
+    await _prefs.setString(_keyProfilePicture, profilePicture);
+  }
+
   /// Clear user session (logout)
   Future<void> clearUserSession() async {
     await _prefs.setBool(_keyIsLoggedIn, false);
@@ -91,5 +96,15 @@ class UserSessionService {
       return DateTime.tryParse(dateStr);
     }
     return null;
+  }
+
+  /// ================= NEW METHOD =================
+  /// Returns the current user's ID (authId)
+  String getCurrentUserId() {
+    final id = _prefs.getString(_keyAuthId);
+    if (id == null) {
+      throw Exception('No user logged in');
+    }
+    return id;
   }
 }
