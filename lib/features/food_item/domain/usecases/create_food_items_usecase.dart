@@ -9,7 +9,7 @@ import '../../data/repositories/food_items_repository.dart';
 import '../entities/food_items_entity.dart';
 import '../repositories/food_items_repository.dart';
 
-/// ================== PARAMS ==================
+
 class CreateFoodItemParams extends Equatable {
   final String name;
   final String? description;
@@ -41,7 +41,7 @@ class CreateFoodItemParams extends Equatable {
       ];
 }
 
-/// ================== PROVIDER ==================
+
 final createFoodItemUsecaseProvider =
     Provider<CreateFoodItemUsecase>((ref) {
   final repository = ref.read(foodItemsRepositoryProvider);
