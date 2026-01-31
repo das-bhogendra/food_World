@@ -9,7 +9,7 @@ import 'package:food_mandu/features/auth/domain/usecases/login_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/register_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/uploadphoto_usecase.dart';
 import 'package:food_mandu/features/auth/presentation/state/auth_state.dart';
-import 'package:food_mandu/features/auth/presentation/view_model/auth_viewmodel.dart';
+
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
 
 class MockRegisterUsecase extends Mock implements RegisterUsecase {}
