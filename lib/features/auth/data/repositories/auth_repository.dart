@@ -16,7 +16,8 @@ import 'package:food_mandu/features/auth/domain/entities/auth_entity.dart';
 import 'package:food_mandu/features/auth/domain/repositories/auth_repository.dart';
 
 
-/// ================= PROVIDER =================
+
+
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
   return AuthRepository(
     authLocalDatasource: ref.read(authLocalDatasourceProvider),
@@ -84,7 +85,7 @@ class AuthRepository implements IAuthRepository {
     }
   }
 
-  /// ================= LOGOUT =================
+  
   @override
   Future<Either<Failure, bool>> logout() async {
     try {
