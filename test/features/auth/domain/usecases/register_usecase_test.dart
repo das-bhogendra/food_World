@@ -41,7 +41,7 @@ void main() {
     profilePicture: tProfilePicture,
   );
 
-  // The AuthEntity that should be passed to the repository
+  
   const tAuthEntity = AuthEntity(
     fullName: tFullName,
     email: tEmail,
