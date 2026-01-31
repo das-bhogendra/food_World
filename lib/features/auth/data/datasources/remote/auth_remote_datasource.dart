@@ -109,7 +109,7 @@ class AuthRemoteDatasource implements IAuthRemoteDatasource {
     return null;
   }
 
-  // ---------------- UPLOAD PROFILE PHOTO ----------------
+  
   @override
   Future<String> uploadProfilePhoto(File photo) async {
     final fileName = photo.path.split('/').last;
