@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import '../models/food_items_hive_model.dart';
 import 'package:food_mandu/features/food_item/data/models/food_items_api_model.dart';
+import 'package:food_mandu/features/food_item/data/models/food_items_hive_model.dart';
+
 abstract interface class IFoodItemsLocalDatasource {
   Future<bool> createFoodItem(FoodItemHiveModel item);
   Future<bool> updateFoodItem(FoodItemHiveModel item);
@@ -14,16 +15,25 @@ abstract interface class IFoodItemsLocalDatasource {
 }
 
 abstract interface class IFoodItemsRemoteDataSource {
+
+
+  Future<FoodItemApiModel> createFoodItem(
+    FoodItemApiModel item, {
+    File? imageFile,
+  });
+
+  Future<FoodItemApiModel> updateFoodItem(
+    FoodItemApiModel item, {
+    File? imageFile,
+  });
   
-  Future<FoodItemApiModel> createFoodItem(FoodItemApiModel item);
-  Future<FoodItemApiModel> updateFoodItem(FoodItemApiModel item);
   Future<bool> deleteFoodItem(String id);
+
   Future<List<FoodItemApiModel>> getAllFoodItems();
   Future<FoodItemApiModel?> getFoodItemById(String id);
   Future<List<FoodItemApiModel>> getFoodItemsByUser(String userId);
   Future<List<FoodItemApiModel>> getFoodItemsByType(String type);
 
-  /// Media upload
   Future<String> uploadPhoto(File photo);
   Future<String> uploadVideo(File video);
 }

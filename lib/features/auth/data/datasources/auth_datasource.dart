@@ -10,7 +10,7 @@ abstract interface class IAuthLocalDatasource{
   Future<AuthHiveModel?> getCurrentUser();
   Future<bool> logout();
 
-  //get email exists
+  
 
   Future<bool> isEmailExists(String email);
 }

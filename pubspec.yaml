@@ -8,11 +8,9 @@ version: 1.0.0+1
 environment:
   sdk: ">=3.9.2 <4.0.0"
 
-
 dependencies:
   flutter:
     sdk: flutter
-    
 
   cupertino_icons: ^1.0.8
   test_cov_console: ^0.2.2
@@ -25,6 +23,8 @@ dependencies:
   shared_preferences: ^2.1.1
   image_picker: ^1.1.1
   permission_handler: ^12.0.1
+  photo_manager: ^3.0.0 
+  
 
   # Value Equality
   equatable: ^2.0.8
@@ -47,6 +47,12 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   flutter_secure_storage: ^10.0.0
 
+  # Firebase
+  cloud_firestore: ^5.0.0
+
+  # Image Caching
+  cached_network_image: 3.3.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -61,8 +67,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
-    - assets/icon/
+    - assets/images/        # all food images (biryani, burger, pasta, etc.)
+    - assets/icon/         # icons folder (if needed)
 
   fonts:
     - family: OpenSansBold

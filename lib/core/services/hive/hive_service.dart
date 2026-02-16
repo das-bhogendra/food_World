@@ -2,6 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:food_mandu/core/constants/hive_table_constant.dart';
 import 'package:food_mandu/features/auth/data/models/auth_hive_model.dart';
+import 'package:food_mandu/features/order/data/models/order_hive_model.dart';
 
 class HiveService {
   static const String _currentUserKey = 'current_user_id';
@@ -14,6 +15,9 @@ class HiveService {
 
     // Register adapters
     Hive.registerAdapter(AuthHiveModelAdapter());
+    // Register Order adapters - Required for order storage
+    Hive.registerAdapter(OrderItemHiveModelAdapter());
+    Hive.registerAdapter(OrderHiveModelAdapter());
 
     // Open boxes
     _authBox = await Hive.openBox<AuthHiveModel>(HiveTableConstant.authTable);

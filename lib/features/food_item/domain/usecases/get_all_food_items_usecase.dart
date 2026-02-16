@@ -14,6 +14,13 @@ final getAllFoodItemsUsecaseProvider =
   return GetAllFoodItemsUsecase(repository: repository);
 });
 
+/// ================= FUTURE PROVIDER =================
+final allFoodItemsProvider = FutureProvider<List<FoodItemEntity>>((ref) async {
+  final usecase = ref.read(getAllFoodItemsUsecaseProvider);
+  final result = await usecase();
+  return result.fold((failure) => throw failure, (items) => items);
+});
+
 /// ================= USECASE =================
 class GetAllFoodItemsUsecase
     implements UsecaseWithoutParams<List<FoodItemEntity>> {

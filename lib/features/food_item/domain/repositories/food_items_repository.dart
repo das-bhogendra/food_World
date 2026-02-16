@@ -14,9 +14,15 @@ abstract interface class IFoodItemsRepository {
   Future<Either<Failure, FoodItemEntity>> getFoodItemById(String foodItemId);
 
   /// ================= CREATE / UPDATE / DELETE =================
-  Future<Either<Failure, bool>> createFoodItem(FoodItemEntity foodItem);
+  Future<Either<Failure, bool>> createFoodItem(
+    FoodItemEntity foodItem, {
+    File? imageFile, // ✅ add this
+  });
 
-  Future<Either<Failure, bool>> updateFoodItem(FoodItemEntity foodItem);
+  Future<Either<Failure, bool>> updateFoodItem(
+    FoodItemEntity foodItem, {
+    File? imageFile, // ✅ add this if needed
+  });
 
   Future<Either<Failure, bool>> deleteFoodItem(String foodItemId);
 

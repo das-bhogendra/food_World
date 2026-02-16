@@ -10,9 +10,9 @@ import '../entities/food_items_entity.dart';
 import '../repositories/food_items_repository.dart';
 
 /// =======================
-/// Parameters for creating food item
+/// Parameters for updating food item
 /// =======================
-class CreateFoodItemParams extends Equatable {
+class UpdateFoodItemParams extends Equatable {
   final String id;
   final String name;
   final String? description;
@@ -21,10 +21,10 @@ class CreateFoodItemParams extends Equatable {
   final String? imageUrl;
   final bool isAvailable;
   final String addedBy;
-  final bool isBestSeller;    // ✅ Added
-  final bool isDiscounted;    // ✅ Added
+  final bool isBestSeller;
+  final bool isDiscounted;
 
-  const CreateFoodItemParams({
+  const UpdateFoodItemParams({
     required this.id,
     required this.name,
     this.description,
@@ -33,8 +33,8 @@ class CreateFoodItemParams extends Equatable {
     this.imageUrl,
     this.isAvailable = true,
     required this.addedBy,
-    this.isBestSeller = false,   // default false
-    this.isDiscounted = false,   // default false
+    this.isBestSeller = false,
+    this.isDiscounted = false,
   });
 
   @override
@@ -55,25 +55,25 @@ class CreateFoodItemParams extends Equatable {
 /// =======================
 /// Provider for use case
 /// =======================
-final createFoodItemUsecaseProvider =
-    Provider<CreateFoodItemUsecase>((ref) {
+final updateFoodItemUsecaseProvider =
+    Provider<UpdateFoodItemUsecase>((ref) {
   final repository = ref.read(foodItemsRepositoryProvider);
-  return CreateFoodItemUsecase(foodItemRepository: repository);
+  return UpdateFoodItemUsecase(foodItemRepository: repository);
 });
 
 /// =======================
 /// Usecase implementation
 /// =======================
-class CreateFoodItemUsecase
-    implements UsecaseWithParams<bool, CreateFoodItemParams> {
+class UpdateFoodItemUsecase
+    implements UsecaseWithParams<bool, UpdateFoodItemParams> {
   final IFoodItemsRepository _foodItemRepository;
 
-  CreateFoodItemUsecase({
+  UpdateFoodItemUsecase({
     required IFoodItemsRepository foodItemRepository,
   }) : _foodItemRepository = foodItemRepository;
 
   @override
-  Future<Either<Failure, bool>> call(CreateFoodItemParams params) {
+  Future<Either<Failure, bool>> call(UpdateFoodItemParams params) {
     // Map params to FoodItemEntity
     final foodItemEntity = FoodItemEntity(
       id: params.id,
@@ -84,11 +84,11 @@ class CreateFoodItemUsecase
       imageUrl: params.imageUrl,
       isAvailable: params.isAvailable,
       addedBy: params.addedBy,
-      isBestSeller: params.isBestSeller,   // ✅ Map from params
-      isDiscounted: params.isDiscounted,   // ✅ Map from params
+      isBestSeller: params.isBestSeller,
+      isDiscounted: params.isDiscounted,
     );
 
     // Call repository
-    return _foodItemRepository.createFoodItem(foodItemEntity);
+    return _foodItemRepository.updateFoodItem(foodItemEntity);
   }
 }

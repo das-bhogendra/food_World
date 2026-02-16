@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_mandu/screen/buttom_screen.dart';
+
 import '../core/services/hive/hive_service.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 import '../core/utils/snackbar_utils.dart';
 import 'register_screen.dart';
-import 'buttom_screen.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
-
 import 'package:food_mandu/features/auth/presentation/state/auth_state.dart';
+
+
 
 class LoginScreen extends ConsumerStatefulWidget {
   final HiveService hiveService;
@@ -30,7 +32,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  Future <void> _login()async {
+  Future<void> _login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -39,8 +41,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
 
-    // Trigger login in AuthViewModel
-    ref.read(authViewModelProvider.notifier).login(username:email, password:  password);
+    ref.read(authViewModelProvider.notifier).login(
+          username: email,
+          password: password,
+        );
   }
 
   void _navigateToRegister() {
@@ -56,18 +60,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
 
-    // Handle post-frame UI changes: success/error
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (authState.status == AuthStatus.authenticated &&
-          authState.authEntity != null) {
+    // Listen auth changes
+    ref.listen(authViewModelProvider, (previous, next) {
+      if (next.status == AuthStatus.authenticated && next.authEntity != null) {
         SnackbarUtils.showSuccess(context, "Login Successful");
+
+        // role निकाल्ने
+        final role = next.authEntity!.role ?? 'user';
+
+        // Bottom navigation मा पठाउने
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const BottomScreenLayout()),
+          MaterialPageRoute(
+            builder: (_) => BottomScreenLayout(userRole: role),
+          ),
         );
-      } else if (authState.status == AuthStatus.error &&
-          authState.errorMessage != null) {
-        SnackbarUtils.showError(context, authState.errorMessage!);
+      }
+
+      if (next.status == AuthStatus.error && next.errorMessage != null) {
+        SnackbarUtils.showError(context, next.errorMessage!);
       }
     });
 
@@ -79,7 +90,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         title: const Text(
           "Login",
           style: TextStyle(
-              fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -91,7 +105,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             const Text(
               "Welcome login page",
               style: TextStyle(
-                  fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black87),
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             const Text(
@@ -136,7 +153,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: const Text(
                   "Don't have an account? Register",
                   style: TextStyle(
-                      fontSize: 15, color: Colors.black, fontWeight: FontWeight.w600),
+                    fontSize: 15,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

@@ -63,9 +63,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated && next.authEntity != null) {
         SnackbarUtils.showSuccess(context, "Login Successful");
+        final userRole = next.authEntity!.role ?? 'user'; // Assuming role is a field in authEntity
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const BottomScreenLayout()),
+          MaterialPageRoute(builder: (_) => BottomScreenLayout(userRole: userRole)),
         );
       }
 

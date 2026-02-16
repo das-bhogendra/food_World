@@ -3,14 +3,11 @@ import 'package:food_mandu/core/services/hive/food_items_hive_service.dart';
 import 'package:food_mandu/features/food_item/data/datasources/food_items_datasource.dart';
 import 'package:food_mandu/features/food_item/data/models/food_items_hive_model.dart';
 
-
 final foodItemLocalDatasourceProvider =
     Provider<FoodItemLocalDatasource>((ref) {
-  // Use the hive service variable properly
   final hiveService = FoodItemHiveService();
   return FoodItemLocalDatasource(hiveService: hiveService);
 });
-
 
 class FoodItemLocalDatasource implements IFoodItemsLocalDatasource {
   final FoodItemHiveService _hiveService;
@@ -81,6 +78,22 @@ class FoodItemLocalDatasource implements IFoodItemsLocalDatasource {
       return _hiveService.getFoodItemsByType(type);
     } catch (_) {
       return [];
+    }
+  }
+
+  /// ---------------- OPTION 1 ----------------
+  /// Create or update food item depending if it exists
+  Future<bool> createOrUpdateFoodItem(FoodItemHiveModel item) async {
+    try {
+      final existingItem = await _hiveService.getFoodItemById(item.id);
+      if (existingItem != null) {
+        await _hiveService.updateFoodItem(item);
+      } else {
+        await _hiveService.createFoodItem(item);
+      }
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 }

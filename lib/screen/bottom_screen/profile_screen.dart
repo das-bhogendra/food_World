@@ -1,12 +1,14 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
-
 import 'package:food_mandu/core/services/storage/user_session_service.dart';
+import 'package:food_mandu/features/order/presentation/view_model/order_view_model.dart';
+import 'package:food_mandu/features/order/presentation/pages/my_order_pages.dart';
+import 'package:food_mandu/features/food_item/presentation/pages/my_food_items_pages.dart';
+import 'package:food_mandu/features/food_item/presentation/pages/report_food_items_pages.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -16,6 +18,10 @@ class ProfileScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final session = ref.watch(userSessionServiceProvider);
 
+    // Get user role and ID
+    final userRole = session.userRole ?? 'user';
+    final userId = session.userId ?? '';
+
     return Scaffold(
       backgroundColor: const Color(0xffFFF7F3),
       body: SafeArea(
@@ -23,7 +29,9 @@ class ProfileScreen extends ConsumerWidget {
           children: [
             _buildHeader(context, theme, ref, session),
             const SizedBox(height: 20),
-            _buildProfileOptions(theme),
+            Expanded(
+              child: _buildProfileOptions(context, ref, userRole, userId),
+            ),
           ],
         ),
       ),
@@ -32,11 +40,7 @@ class ProfileScreen extends ConsumerWidget {
 
   // ================= HEADER =================
   Widget _buildHeader(
-    BuildContext context,
-    ThemeData theme,
-    WidgetRef ref,
-    UserSessionService session,
-  ) {
+      BuildContext context, ThemeData theme, WidgetRef ref, UserSessionService session) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
@@ -54,126 +58,142 @@ class ProfileScreen extends ConsumerWidget {
                   ? NetworkImage(session.profilePicture!)
                   : null,
               child: session.profilePicture == null
-                  ? const Icon(
-                      Icons.camera_alt,
-                      size: 35,
-                      color: Color(0xffB33B2E),
-                    )
+                  ? const Icon(Icons.camera_alt, size: 35, color: Color(0xffB33B2E))
                   : null,
             ),
           ),
           const SizedBox(height: 10),
-          Text(
-            session.fullName ?? "User",
-            style:
-                theme.textTheme.titleLarge?.copyWith(color: Colors.white),
-          ),
+          Text(session.fullName ?? "User",
+              style: theme.textTheme.titleLarge?.copyWith(color: Colors.white)),
           const SizedBox(height: 4),
-          Text(
-            session.email ?? "",
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: Colors.white70),
-          ),
+          Text(session.email ?? "", style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white70)),
         ],
       ),
     );
   }
 
-  // ================= IMAGE SOURCE SHEET =================
+  // ================= IMAGE PICKER =================
   void _showImageSourceSheet(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 10),
-              const Text(
-                "Upload Profile Photo",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text("Take Photo"),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickAndUploadImage(ref, ImageSource.camera);
-                },
-              ),
-
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text("Choose from Gallery"),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickAndUploadImage(ref, ImageSource.gallery);
-                },
-              ),
-
-              const SizedBox(height: 10),
-            ],
-          ),
-        );
-      },
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            const Text("Upload Profile Photo",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Take Photo"),
+              onTap: () {
+                Navigator.pop(context);
+                _pickAndUploadImage(ref, ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text("Choose from Gallery"),
+              onTap: () {
+                Navigator.pop(context);
+                _pickAndUploadImage(ref, ImageSource.gallery);
+              },
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
     );
   }
 
-  // ================= PICK & UPLOAD =================
-  Future<void> _pickAndUploadImage(
-    WidgetRef ref,
-    ImageSource source,
-  ) async {
+  Future<void> _pickAndUploadImage(WidgetRef ref, ImageSource source) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: source,
-      imageQuality: 80,
-    );
-
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 80);
     if (pickedFile == null) return;
-
     final file = File(pickedFile.path);
-
-    await ref
-        .read(authViewModelProvider.notifier)
-        .uploadPhoto(file);
+    await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
   }
 
   // ================= OPTIONS =================
-  Widget _buildProfileOptions(ThemeData theme) {
-    return Padding(
+  Widget _buildProfileOptions(BuildContext context, WidgetRef ref, String userRole, String userId) {
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
-        children: const [
+        children: [
           ProfileTile(
             icon: Icons.person_outline,
             title: "Edit Profile",
+            onTap: () {
+              // TODO: Navigate to Edit Profile
+            },
           ),
           ProfileTile(
             icon: Icons.location_on_outlined,
             title: "Delivery Address",
+            onTap: () {
+              // TODO: Navigate to Address Management
+            },
           ),
           ProfileTile(
             icon: Icons.payment_outlined,
             title: "Payment Methods",
+            onTap: () {
+              // TODO: Navigate to Payment Methods
+            },
           ),
           ProfileTile(
             icon: Icons.receipt_long_outlined,
             title: "My Orders",
+            onTap: () {
+              // Navigate to MyOrders screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => MyOrderPages(userId: userId, userRole: userRole),
+                ),
+              );
+            },
           ),
+          if (userRole == "admin") ...[
+            ProfileTile(
+              icon: Icons.restaurant_menu,
+              title: "My Food Items",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MyFoodItemsPage()),
+                );
+              },
+            ),
+            ProfileTile(
+              icon: Icons.add,
+              title: "Report Food Item",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ReportFoodItemPage()),
+                );
+              },
+            ),
+          ],
           ProfileTile(
             icon: Icons.settings_outlined,
             title: "Settings",
+            onTap: () {
+              // TODO: Navigate to Settings
+            },
           ),
           ProfileTile(
             icon: Icons.logout,
             title: "Logout",
             isLogout: true,
+            onTap: () {
+              // TODO: Implement logout
+            },
           ),
         ],
       ),
@@ -186,12 +206,14 @@ class ProfileTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final bool isLogout;
+  final VoidCallback? onTap;
 
   const ProfileTile({
     super.key,
     required this.icon,
     required this.title,
     this.isLogout = false,
+    this.onTap,
   });
 
   @override
@@ -203,28 +225,14 @@ class ProfileTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 4))],
       ),
       child: ListTile(
-        leading: Icon(
-          icon,
-          color: isLogout ? Colors.red : theme.iconTheme.color,
-        ),
-        title: Text(
-          title,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: isLogout ? Colors.red : Colors.black,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        leading: Icon(icon, color: isLogout ? Colors.red : theme.iconTheme.color),
+        title: Text(title,
+            style: theme.textTheme.bodyLarge?.copyWith(color: isLogout ? Colors.red : Colors.black, fontWeight: FontWeight.w500)),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-        onTap: () {},
+        onTap: onTap,
       ),
     );
   }

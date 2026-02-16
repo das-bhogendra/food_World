@@ -1,16 +1,17 @@
-# TODO List for Fixing Riverpod Provider Exception
+# TODO - Fix Order Status Validation Issue
 
-## Completed Tasks
-- [x] Identified the issue: usecase providers in auth_provider.dart were throwing UnimplementedError
-- [x] Fixed usecase providers by assigning them to the correct providers from usecase files
-- [x] Removed duplicate throwing providers
+## Issue
+Backend returns error: "Order validation failed: status: `complete` is not a valid enum value for path `status`."
 
-## Remaining Tasks
-- [x] Test the app to ensure the provider exception is resolved - App builds and runs successfully
-- [ ] Fix test files that have conflicts with AuthViewModel class (optional, as app should work)
-- [x] Ensure all dependencies are properly overridden in main.dart (seems they are)
+## Root Cause
+User types "complete" (without 'd') but backend expects "completed" (with 'd').
 
-## Notes
-- The app uses the AuthViewModel from auth_provider.dart which uses ref.watch for dependencies
-- Tests expect a different AuthViewModel with constructor injection
-- Main fix is done, app should run without provider exception
+## Plan
+
+### Step 1: Add valid order status constants
+- [ ] Add OrderStatusConstants class in lib/features/order/domain/entities/order_entity.dart
+
+### Step 2: Update order_detail_pages.dart
+- [ ] Add validation for status input in order_detail_pages.dart
+- [ ] Auto-correct "complete" -> "completed"
+- [ ] Show error for invalid status values

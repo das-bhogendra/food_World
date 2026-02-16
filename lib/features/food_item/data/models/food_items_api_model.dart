@@ -5,14 +5,16 @@ import 'package:uuid/uuid.dart';
 class FoodItemApiModel {
   final String id;
   final String name;
-  final String? description; // ❌ corrected syntax
+  final String? description;
   final String type; // 'veg', 'nonVeg', 'drink', 'dessert'
   final double price;
   final String? imageUrl;
   final bool isAvailable;
-  final String addedBy;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? addedBy; // ❌ make optional
+  final bool isBestSeller;
+  final bool isDiscounted;
+  final DateTime? createdAt; // optional for create/update
+  final DateTime? updatedAt; // optional for create/update
 
   FoodItemApiModel({
     required this.id,
@@ -22,30 +24,34 @@ class FoodItemApiModel {
     required this.price,
     this.imageUrl,
     required this.isAvailable,
-    required this.addedBy,
-    required this.createdAt,
-    required this.updatedAt,
+    this.addedBy,
+    this.isBestSeller = false,
+    this.isDiscounted = false,
+    this.createdAt,
+    this.updatedAt,
   });
 
   /// From JSON (API response → Dart object)
   factory FoodItemApiModel.fromJson(Map<String, dynamic> json) {
     return FoodItemApiModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
+      id: json['_id'] as String? ?? const Uuid().v4(),
+      name: json['name'] as String? ?? '',
       description: json['description'] as String?,
-      type: json['type'] as String,
-      price: (json['price'] as num).toDouble(),
+      type: json['type'] as String? ?? 'veg',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
       imageUrl: json['imageUrl'] as String?,
       isAvailable: json['isAvailable'] as bool? ?? true,
-      addedBy: json['addedBy'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      addedBy: json['addedBy'] as String?,
+      isBestSeller: json['isBestSeller'] as bool? ?? false,
+      isDiscounted: json['isDiscounted'] as bool? ?? false,
+      createdAt: DateTime.tryParse(json['createdAt'] as String? ?? ''),
+      updatedAt: DateTime.tryParse(json['updatedAt'] as String? ?? ''),
     );
   }
 
   /// To JSON (Dart object → API request)
   Map<String, dynamic> toJson() {
-    return {
+    final data = {
       'id': id,
       'name': name,
       'description': description,
@@ -53,10 +59,18 @@ class FoodItemApiModel {
       'price': price,
       'imageUrl': imageUrl,
       'isAvailable': isAvailable,
-      'addedBy': addedBy,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'isBestSeller': isBestSeller,
+      'isDiscounted': isDiscounted,
     };
+
+    // include addedBy only if not null
+    if (addedBy != null) data['addedBy'] = addedBy;
+
+    // include createdAt/updatedAt only if not null
+    if (createdAt != null) data['createdAt'] = createdAt!.toIso8601String();
+    if (updatedAt != null) data['updatedAt'] = updatedAt!.toIso8601String();
+
+    return data;
   }
 
   /// Convert API model → Entity
@@ -65,29 +79,36 @@ class FoodItemApiModel {
       id: id,
       name: name,
       description: description,
-      type: FoodItemType.values.firstWhere((e) => e.name == type),
+      type: FoodItemType.values.firstWhere(
+        (e) => e.name == type,
+        orElse: () => FoodItemType.veg,
+      ),
       price: price,
       imageUrl: imageUrl,
       isAvailable: isAvailable,
-      addedBy: addedBy,
+      addedBy: addedBy ?? 'Unknown', // fallback if null
+      isBestSeller: isBestSeller,
+      isDiscounted: isDiscounted,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
   }
 
-  /// Convert Entity → API model (null-safety for non-nullable fields)
+  /// Convert Entity → API model
   factory FoodItemApiModel.fromEntity(FoodItemEntity entity) {
     return FoodItemApiModel(
-      id: entity.id ?? const Uuid().v4(), // default if null
+      id: entity.id ?? const Uuid().v4(),
       name: entity.name,
       description: entity.description,
-      type: entity.type.name , // default if null
+      type: entity.type.name,
       price: entity.price,
       imageUrl: entity.imageUrl,
       isAvailable: entity.isAvailable,
       addedBy: entity.addedBy,
-      createdAt: entity.createdAt ?? DateTime.now(),
-      updatedAt: entity.updatedAt ?? DateTime.now(),
+      isBestSeller: entity.isBestSeller,
+      isDiscounted: entity.isDiscounted,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
     );
   }
 

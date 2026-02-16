@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class ApiEndpoints {
-  ApiEndpoints._();
+  ApiEndpoints._(); // Private constructor to prevent instantiation
 
   // ================= BASE =================
   static String get baseUrl {
@@ -19,37 +19,56 @@ class ApiEndpoints {
   static const String users = '/users';
   static const String login = '/auth/login';
   static const String register = '/auth/register';
-
   static String userById(String id) => '/users/$id';
-
-  // 🔥 PROFILE PHOTO UPLOAD (JWT-based) → CORRECTED
-  static const String userUploadPhoto = '/auth/profile'; // matches backend PUT /profile
+  static const String userUploadPhoto = '/auth/profile'; // PUT /profile
 
   // ================= FOOD / ITEMS =================
-  static const String foods = '/foods';
+static const String foods = '/fooditems';
 
-  /// CRUD
-  static const String createFoodItem = '/foods';
-  static String updateFoodItem(String id) => '/foods/$id';
-  static String deleteFoodItem(String id) => '/foods/$id';
-  static const String getAllFoodItems = '/foods';
-  static String getFoodItemById(String id) => '/foods/$id';
+/// CRUD
+static const String createFoodItem = '/fooditems';
+static String updateFoodItem(String id) => '/fooditems/$id';
+static String deleteFoodItem(String id) => '/fooditems/$id';
+static const String getAllFoodItems = '/fooditems';
+static String getFoodItemById(String id) => '/fooditems/$id';
 
-  /// Filters
-  static String getFoodItemsByUser(String userId) => '/foods/user/$userId';
-  static String getFoodItemsByType(String type) => '/foods/type/$type';
-  static String foodByCategory(String categoryId) => '/foods/category/$categoryId';
+/// Filters
+static String getFoodItemsByUser(String userId) => '/fooditems/user/$userId';
+static String getFoodItemsByType(String type) => '/fooditems/type/$type';
+static String foodByCategory(String categoryId) => '/fooditems/category/$categoryId';
 
-  /// Media upload
-  static const String foodUploadPhoto = '/foods/upload/photo';
-  static const String foodUploadVideo = '/foods/upload/video';
+/// Media upload
+static const String foodUploadPhoto = '/fooditems/upload/photo';
+static const String foodUploadVideo = '/fooditems/upload/video';
+
 
   // ================= CATEGORY =================
   static const String categories = '/categories';
-  static String categoryById(String id) => '/categories/$id';
+
+  /// CRUD
+  static const String createCategory = '/categories';
+  static String updateCategory(String id) => '/categories/$id';
+  static String deleteCategory(String id) => '/categories/$id';
+  static const String getAllCategories = '/categories';
+  static String getcategoryById(String id) => '/categories/$id';
+
+  /// Get categories added by a specific user
+  static String getCategoriesByUser(String userId) => '/categories/user/$userId';
 
   // ================= ORDER =================
   static const String orders = '/orders';
-  static String orderById(String id) => '/orders/$id';
-  static String orderStatus(String id) => '/orders/$id/status';
+
+  /// CRUD
+  static const String createOrder = '/orders';
+  static String updateOrder(String id) => '/orders/$id';
+  static String deleteOrder(String id) => '/orders/$id';
+  static const String getAllOrders = '/orders';
+  static String getOrderById(String id) => '/orders/$id';
+
+  /// Filters
+  static String getOrdersByUser(String userId) => '/orders?userId=$userId';
+  static String getOrdersByStatus(String status) => '/orders/status/$status';
+
+  /// Update status
+  static String updateOrderStatus(String id) => '/orders/$id/status';
 }

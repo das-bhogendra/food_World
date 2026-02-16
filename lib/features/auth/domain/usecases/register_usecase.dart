@@ -8,7 +8,7 @@ import 'package:food_mandu/features/auth/domain/entities/auth_entity.dart';
 import 'package:food_mandu/features/auth/domain/repositories/auth_repository.dart';
 
 
-/// ================= USECASE PARAMS =================
+
 class RegisterUsecaseParams extends Equatable {
   final String fullName;
   final String email;
@@ -53,7 +53,7 @@ final RegisterUsecaseProvider = Provider<RegisterUsecase>((ref){
 
 
 
-/// ================= REGISTER USECASE =================
+
 class RegisterUsecase
     implements UsecaseWithParams<bool, RegisterUsecaseParams> {
   final IAuthRepository _authRepository;

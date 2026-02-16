@@ -19,6 +19,7 @@ void main() {
   });
 
   final tParams = CreateFoodItemParams(
+    id: 'test_id',
     name: 'Pizza',
     description: 'Delicious cheese pizza',
     type: FoodItemType.veg,
@@ -29,6 +30,7 @@ void main() {
   );
 
   final tEntity = FoodItemEntity(
+    id: tParams.id,
     name: tParams.name,
     description: tParams.description,
     type: tParams.type,
@@ -36,6 +38,8 @@ void main() {
     imageUrl: tParams.imageUrl,
     isAvailable: tParams.isAvailable,
     addedBy: tParams.addedBy,
+    isBestSeller: tParams.isBestSeller,
+    isDiscounted: tParams.isDiscounted,
   );
 
   group('CreateFoodItemUsecase', () {

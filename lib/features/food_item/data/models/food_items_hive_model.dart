@@ -32,9 +32,15 @@ class FoodItemHiveModel extends HiveObject {
   final String addedBy;
 
   @HiveField(8)
-  final DateTime createdAt;
+  final bool isBestSeller; // ✅ Added
 
   @HiveField(9)
+  final bool isDiscounted; // ✅ Added
+
+  @HiveField(10)
+  final DateTime createdAt;
+
+  @HiveField(11)
   final DateTime updatedAt;
 
   FoodItemHiveModel({
@@ -46,10 +52,14 @@ class FoodItemHiveModel extends HiveObject {
     this.imageUrl,
     bool? isAvailable,
     required this.addedBy,
+    bool? isBestSeller,
+    bool? isDiscounted,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
         isAvailable = isAvailable ?? true,
+        isBestSeller = isBestSeller ?? false,
+        isDiscounted = isDiscounted ?? false,
         createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
 
@@ -64,6 +74,8 @@ class FoodItemHiveModel extends HiveObject {
       imageUrl: imageUrl,
       isAvailable: isAvailable,
       addedBy: addedBy,
+      isBestSeller: isBestSeller,
+      isDiscounted: isDiscounted,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
@@ -75,11 +87,13 @@ class FoodItemHiveModel extends HiveObject {
       id: entity.id,
       name: entity.name,
       description: entity.description,
-      type: entity.type.name, // enum name: veg, nonVeg, drink, dessert
+      type: entity.type.name,
       price: entity.price,
       imageUrl: entity.imageUrl,
       isAvailable: entity.isAvailable,
       addedBy: entity.addedBy,
+      isBestSeller: entity.isBestSeller,
+      isDiscounted: entity.isDiscounted,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     );

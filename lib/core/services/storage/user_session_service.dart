@@ -84,10 +84,12 @@ class UserSessionService {
 
   /// Get stored user data
   String? get authId => _prefs.getString(_keyAuthId);
+  String? get userId => _prefs.getString(_keyAuthId);
   String? get fullName => _prefs.getString(_keyFullName);
   String? get username => _prefs.getString(_keyUsername);
   String? get email => _prefs.getString(_keyEmail);
   String? get role => _prefs.getString(_keyRole);
+  String? get userRole => _prefs.getString(_keyRole);
   String? get phoneNumber => _prefs.getString(_keyPhoneNumber);
   String? get profilePicture => _prefs.getString(_keyProfilePicture);
   DateTime? get createdAt {
