@@ -20,4 +20,8 @@ class HiveTableConstant {
 
   static const int foodItemTypeId = 5;
   static const String foodItemTable = 'food_item_table';
+
+  static const int orderTypeId = 6;
+  static const String orderTable = 'order_table';
+
 }
