@@ -1,18 +1,16 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'package:food_mandu/features/food_item/presentation/notifier/food_item_notifier.dart';
+import 'package:food_mandu/features/food_item/presentation/state/food_items_state.dart';
+import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.dart';
 import 'package:food_mandu/theme/app_colors.dart';
 import 'package:food_mandu/theme/theme_extensions.dart';
 import '../../../../core/services/storage/user_session_service.dart';
 import '../../../../core/utils/snackbar_utils.dart';
-
-import 'package:food_mandu/features/food_item/presentation/state/food_items_state.dart';
-import 'package:food_mandu/features/food_item/presentation/view_model/food_items_view_model.dart';
-import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.dart';
 
 class ReportFoodItemPage extends ConsumerStatefulWidget {
   const ReportFoodItemPage({super.key});
@@ -134,7 +132,7 @@ class _ReportFoodItemPageState extends ConsumerState<ReportFoodItemPage> {
         _selectedMedia.add(photo);
         _selectedMediaType = 'photo';
       });
-      await ref.read(foodItemsViewModelProvider.notifier).uploadPhoto(File(photo.path));
+      await ref.read(foodItemNotifierProvider.notifier).uploadPhoto(File(photo.path));
     }
   }
 
@@ -148,7 +146,7 @@ class _ReportFoodItemPageState extends ConsumerState<ReportFoodItemPage> {
         _selectedMedia.add(image);
         _selectedMediaType = 'photo';
       });
-      await ref.read(foodItemsViewModelProvider.notifier).uploadPhoto(File(image.path));
+      await ref.read(foodItemNotifierProvider.notifier).uploadPhoto(File(image.path));
     }
   }
 
@@ -166,33 +164,36 @@ class _ReportFoodItemPageState extends ConsumerState<ReportFoodItemPage> {
         _selectedMedia.add(video);
         _selectedMediaType = 'video';
       });
-      await ref.read(foodItemsViewModelProvider.notifier).uploadVideo(File(video.path));
+      await ref.read(foodItemNotifierProvider.notifier).uploadVideo(File(video.path));
     }
   }
 
   Future<void> _handleSubmit() async {
     if (_formKey.currentState!.validate()) {
       final userId = ref.read(userSessionServiceProvider).authId ?? 'unknown';
-      final uploadedMedia = ref.read(foodItemsViewModelProvider).uploadedMediaUrl;
+      final uploadedMedia = ref.read(foodItemNotifierProvider).uploadedMediaUrl;
 
-      await ref.read(foodItemsViewModelProvider.notifier).createFoodItem(
-            name: _nameController.text.trim(),
-            description: _descriptionController.text.trim().isEmpty
-                ? null
-                : _descriptionController.text.trim(),
-            type: _selectedType,
-            price: 0, // Set price as needed or add input field
-            isAvailable: _isAvailable,
-            addedBy: userId,
-            imageUrl: uploadedMedia,
-            mediaType:_selectedMediaType,
-          );
+      final foodItem = FoodItemEntity(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim().isEmpty
+            ? null
+            : _descriptionController.text.trim(),
+        type: _selectedType,
+        price: 0,
+        isAvailable: _isAvailable,
+        addedBy: userId,
+        imageUrl: uploadedMedia,
+        mediaType: _selectedMediaType,
+      );
+
+      await ref.read(foodItemNotifierProvider.notifier).createFoodItem(foodItem);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<FoodItemState>(foodItemsViewModelProvider, (prev, next) {
+    ref.listen<FoodItemsState>(foodItemNotifierProvider, (prev, next) {
       if (next.status == FoodItemStatus.created) {
         SnackbarUtils.showSuccess(
             context, _isAvailable ? 'Food item added!' : 'Food item marked sold out!');
@@ -398,4 +399,5 @@ class _ReportFoodItemPageState extends ConsumerState<ReportFoodItemPage> {
       ),
     );
   }
-}
+ }
+  

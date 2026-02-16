@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.dart';
+import 'package:food_mandu/features/food_item/presentation/notifier/food_item_notifier.dart';
 import 'package:food_mandu/features/food_item/presentation/state/food_items_state.dart';
-import 'package:food_mandu/features/food_item/presentation/view_model/food_items_view_model.dart';
+
 
 import 'package:food_mandu/theme/app_colors.dart';
 import 'package:food_mandu/theme/theme_extensions.dart';
@@ -27,12 +28,12 @@ class _MyFoodItemsPageState extends ConsumerState<MyFoodItemsPage>
 
   void _loadData() {
     // Fetch food items from your FoodItemViewModel
-    ref.read(foodItemsViewModelProvider.notifier).loadFoodItems();
+    ref.read(foodItemNotifierProvider.notifier).fetchFoodItems();
   }
 
   @override
   Widget build(BuildContext context) {
-    final foodState = ref.watch(foodItemsViewModelProvider);
+    final foodState = ref.watch(foodItemNotifierProvider);
     final availableFood = foodState.items
         .where((item) => item.type == FoodItemType.veg) // Temporary filter for demo
         .toList();

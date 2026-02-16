@@ -1,29 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:food_mandu/theme/theme_extensions.dart';
-
-
 import 'package:food_mandu/theme/app_colors.dart';
-import '../../../../core/utils/snackbar_utils.dart';
-
+import 'package:food_mandu/core/utils/snackbar_utils.dart';
+import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.dart';
 
 class FoodItemDetailPage extends StatelessWidget {
-  final String name;
+  final FoodItemEntity foodItem;
   final String category;
   final String location;
-  final String addedBy; // restaurant or user
-  final String? description;
-  final String? imageUrl;
-  final bool isAvailable; // true if available, false if sold out
 
   const FoodItemDetailPage({
     super.key,
-    required this.name,
+    required this.foodItem,
     required this.category,
     required this.location,
-    required this.addedBy,
-    this.description,
-    this.imageUrl,
-    this.isAvailable = true,
   });
 
   IconData _getCategoryIcon(String category) {
@@ -43,12 +35,82 @@ class FoodItemDetailPage extends StatelessWidget {
     }
   }
 
+  // Correct URL handling
+  Widget _buildFoodImage() {
+    if (foodItem.fullImageUrl == null || foodItem.fullImageUrl!.isEmpty) {
+      // No image: placeholder icon
+      return Container(
+        decoration: BoxDecoration(
+          gradient: foodItem.isAvailable
+              ? AppColors.foundGradient
+              : AppColors.lostGradient,
+        ),
+        child: Center(
+          child: Icon(
+            _getCategoryIcon(category),
+            size: 80,
+            color: Colors.white,
+          ),
+        ),
+      );
+    }
+
+    final path = foodItem.fullImageUrl!;
+    if (path.startsWith('http')) {
+      return Image.network(
+        path,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: foodItem.isAvailable
+                  ? AppColors.foundGradient
+                  : AppColors.lostGradient,
+            ),
+            child: Center(
+              child: Icon(
+                _getCategoryIcon(category),
+                size: 80,
+                color: Colors.white,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      // local file
+      final file = File(path.replaceFirst('file://', ''));
+      if (file.existsSync()) {
+        return Image.file(
+          file,
+          fit: BoxFit.cover,
+          width: double.infinity,
+        );
+      } else {
+        return Container(
+          decoration: BoxDecoration(
+            gradient: foodItem.isAvailable
+                ? AppColors.foundGradient
+                : AppColors.lostGradient,
+          ),
+          child: Center(
+            child: Icon(
+              _getCategoryIcon(category),
+              size: 80,
+              color: Colors.white,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // AppBar with Food Image
           SliverAppBar(
             expandedHeight: 280,
             pinned: true,
@@ -72,38 +134,17 @@ class FoodItemDetailPage extends StatelessWidget {
               ),
             ),
             flexibleSpace: FlexibleSpaceBar(
-              background: imageUrl != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
-                      child: Image.network(
-                        imageUrl!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
-                    )
-                  : Container(
-                      decoration: BoxDecoration(
-                        gradient: isAvailable
-                            ? AppColors.foundGradient
-                            : AppColors.lostGradient,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          _getCategoryIcon(category),
-                          size: 80,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+              background: ClipRRect(
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+                child: _buildFoodImage(),
+              ),
             ),
           ),
-
-          // Content
           SliverToBoxAdapter(
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.background,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
               ),
               child: Transform.translate(
                 offset: const Offset(0, -24),
@@ -127,7 +168,7 @@ class FoodItemDetailPage extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    name,
+                                    foodItem.name,
                                     style: TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
@@ -136,10 +177,7 @@ class FoodItemDetailPage extends StatelessWidget {
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: AppColors.primary.withAlpha(26),
                                     borderRadius: BorderRadius.circular(10),
@@ -156,16 +194,11 @@ class FoodItemDetailPage extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            _InfoChip(
-                              icon: Icons.location_on_rounded,
-                              text: location,
-                            ),
+                            _InfoChip(icon: Icons.location_on_rounded, text: location),
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 20),
-
                       // Description
                       Container(
                         padding: const EdgeInsets.all(20),
@@ -179,11 +212,7 @@ class FoodItemDetailPage extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Icon(
-                                  Icons.description_rounded,
-                                  size: 20,
-                                  color: AppColors.primary,
-                                ),
+                                Icon(Icons.description_rounded, size: 20, color: AppColors.primary),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Description',
@@ -197,7 +226,7 @@ class FoodItemDetailPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              description ?? 'No description provided.',
+                              foodItem.description ?? 'No description provided.',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: context.textSecondary,
@@ -207,9 +236,7 @@ class FoodItemDetailPage extends StatelessWidget {
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 20),
-
                       // Added By
                       Container(
                         padding: const EdgeInsets.all(20),
@@ -227,33 +254,16 @@ class FoodItemDetailPage extends StatelessWidget {
                                 gradient: AppColors.primaryGradient,
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              child: Icon(
-                                Icons.person_rounded,
-                                color: Colors.white,
-                                size: 28,
-                              ),
+                              child: const Icon(Icons.person_rounded, color: Colors.white, size: 28),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Added by',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: context.textSecondary,
-                                    ),
-                                  ),
+                                  Text('Added by', style: TextStyle(fontSize: 12, color: context.textSecondary)),
                                   const SizedBox(height: 4),
-                                  Text(
-                                    addedBy,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: context.textPrimary,
-                                    ),
-                                  ),
+                                  Text(foodItem.addedBy, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: context.textPrimary)),
                                 ],
                               ),
                             ),
@@ -264,16 +274,11 @@ class FoodItemDetailPage extends StatelessWidget {
                                 color: AppColors.primary.withAlpha(26),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Icon(
-                                Icons.chat_rounded,
-                                color: AppColors.primary,
-                                size: 22,
-                              ),
+                              child: Icon(Icons.chat_rounded, color: AppColors.primary, size: 22),
                             ),
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 100),
                     ],
                   ),
@@ -287,62 +292,34 @@ class FoodItemDetailPage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(13),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
+          boxShadow: [BoxShadow(color: Colors.black.withAlpha(13), blurRadius: 20, offset: const Offset(0, -5))],
         ),
         child: SafeArea(
           child: Row(
             children: [
-              // Message Button
               Container(
                 width: 56,
                 height: 56,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withAlpha(26),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(
-                  Icons.chat_bubble_rounded,
-                  color: AppColors.primary,
-                ),
+                decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), borderRadius: BorderRadius.circular(16)),
+                child: Icon(Icons.chat_bubble_rounded, color: AppColors.primary),
               ),
               const SizedBox(width: 16),
-              // Order/Claim Button
               Expanded(
                 child: GestureDetector(
-                  onTap: () {
-                    _showOrderDialog(context);
-                  },
+                  onTap: () => _showOrderDialog(context),
                   child: Container(
                     height: 56,
                     decoration: BoxDecoration(
-                      gradient: isAvailable
-                          ? AppColors.foundGradient
-                          : AppColors.lostGradient,
+                      gradient: foodItem.isAvailable ? AppColors.foundGradient : AppColors.lostGradient,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: AppColors.buttonShadow,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          isAvailable ? Icons.shopping_cart_rounded : Icons.remove_shopping_cart_rounded,
-                          color: Colors.white,
-                        ),
+                        Icon(foodItem.isAvailable ? Icons.shopping_cart_rounded : Icons.remove_shopping_cart_rounded, color: Colors.white),
                         const SizedBox(width: 10),
-                        Text(
-                          isAvailable ? 'Order Now' : 'Sold Out',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
+                        Text(foodItem.isAvailable ? 'Order Now' : 'Sold Out', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                       ],
                     ),
                   ),
@@ -360,16 +337,11 @@ class FoodItemDetailPage extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(isAvailable ? 'Order Food Item' : 'Unavailable'),
-        content: Text(isAvailable
-            ? 'Do you want to order this item?'
-            : 'This food item is currently sold out.'),
+        title: Text(foodItem.isAvailable ? 'Order Food Item' : 'Unavailable'),
+        content: Text(foodItem.isAvailable ? 'Do you want to order this item?' : 'This food item is currently sold out.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: context.textSecondary)),
-          ),
-          if (isAvailable)
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: TextStyle(color: context.textSecondary))),
+          if (foodItem.isAvailable)
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
