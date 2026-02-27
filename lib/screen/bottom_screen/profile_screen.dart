@@ -2,8 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
-import 'package:food_mandu/features/payment/presentation/admin_payment_page.dart';
-import 'package:food_mandu/features/payment/presentation/user_payment_page.dart';
+
 import 'package:food_mandu/screen/login_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -143,23 +142,7 @@ class ProfileScreen extends ConsumerWidget {
             },
           ),
           // ================= PAYMENT =================
-          ProfileTile(
-            icon: Icons.payment_outlined,
-            title: "Payment Methods",
-            onTap: () {
-              if (userRole == "admin") {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AdminPaymentPage()),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const UserPaymentPage()),
-                );
-              }
-            },
-          ),
+          
           ProfileTile(
             icon: Icons.receipt_long_outlined,
             title: "My Orders",

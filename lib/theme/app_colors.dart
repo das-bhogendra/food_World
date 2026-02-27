@@ -23,6 +23,13 @@ class AppColors {
   static const Color cardBackground = Color(0xFFFFFFFF);
   static const Color scaffoldBackground = Color(0xFFF5F5F5);
 
+  // Dark theme colors
+  static const Color darkBackground = Color(0xFF0F172A);
+  static const Color darkSurface = Color(0xFF1E293B);
+
+  // Success color
+  static const Color success = Color(0xFF4CAF50);
+
   // Shadows
   static List<BoxShadow> softShadow = [
     BoxShadow(
