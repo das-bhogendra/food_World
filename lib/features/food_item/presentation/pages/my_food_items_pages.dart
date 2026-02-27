@@ -35,21 +35,40 @@ class _MyFoodItemsPageState extends ConsumerState<MyFoodItemsPage>
   Widget build(BuildContext context) {
     final foodState = ref.watch(foodItemNotifierProvider);
     final availableFood = foodState.items
-        .where((item) => item.type == FoodItemType.veg) // Temporary filter for demo
+        .where((item) => item.type == FoodItemType.veg)
         .toList();
     final soldOutFood = foodState.items
-        .where((item) => item.type == FoodItemType.nonVeg) // Temporary filter for demo
+        .where((item) => item.type == FoodItemType.nonVeg)
         .toList();
 
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            // Header
+            // Header with Back Arrow
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
                 children: [
+                  // ← BACK BUTTON
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context); // Go back to ProfileScreen
+                    },
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: context.surfaceColor,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: context.softShadow,
+                      ),
+                      child: const Icon(Icons.arrow_back, color: Colors.black),
+                    ),
+                  ),
+
+                  const SizedBox(width: 16),
+
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,6 +92,8 @@ class _MyFoodItemsPageState extends ConsumerState<MyFoodItemsPage>
                       ],
                     ),
                   ),
+
+                  // SORT ICON
                   Container(
                     width: 48,
                     height: 48,

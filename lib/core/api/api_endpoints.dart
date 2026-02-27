@@ -6,7 +6,7 @@ class ApiEndpoints {
   // ================= BASE =================
   static String get baseUrl {
     if (kIsWeb) {
-      return 'http://localhost:3000/api';
+      return 'http://172.25.0.222:5005/api/'; // Web
     } else {
       return 'http://10.0.2.2:5005/api'; // Android Emulator
     }

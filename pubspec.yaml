@@ -6,63 +6,60 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.9.2 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  test_cov_console: ^0.2.2
-  mocktail: ^1.0.4
 
   # State Management
-  flutter_riverpod: ^3.1.0
-  riverpod_annotation: ^4.0.0
-  connectivity_plus: ^7.0.0
-  shared_preferences: ^2.1.1
-  image_picker: ^1.1.1
-  permission_handler: ^12.0.1
-  photo_manager: ^3.0.0 
+  flutter_riverpod: ^3.0.3
+  riverpod_annotation: ^3.0.3
   
 
-  # Value Equality
-  equatable: ^2.0.8
-
-  # Functional Programming
-  dartz: ^0.10.1
-
   # Utilities
+  equatable: ^2.0.8
+  dartz: ^0.10.1
   uuid: ^4.3.3
 
-  # Local Database (Offline Storage)
+  # local database(offline storage)
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   path_provider: ^2.1.2
   path: ^1.9.0
+  shared_preferences: ^2.1.1
 
-  # Networking / API
+  # Device
+  connectivity_plus: ^7.0.0
+  image_picker: ^1.1.1
+  permission_handler: ^12.0.1
+  photo_manager: ^3.0.0
+
+  # Networking
   dio: ^5.3.1
   dio_smart_retry: ^7.0.1
   pretty_dio_logger: ^1.4.0
   flutter_secure_storage: ^10.0.0
+  
 
   # Firebase
-  cloud_firestore: ^5.0.0
+  qr_flutter: ^4.0.0
+  
+
+  
 
   # Image Caching
-  cached_network_image: 3.3.1
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
-
-  # Code Generation
   build_runner: ^2.4.12
   hive_generator: ^2.0.1
-
 flutter:
   uses-material-design: true
 
@@ -82,3 +79,5 @@ flutter:
     - family: OpenSansRegular
       fonts:
         - asset: assets/scans/OpenSans-Regular.ttf
+dependency_overrides:
+  analyzer: ^5.12.0

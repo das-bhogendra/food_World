@@ -1,11 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_mandu/core/services/hive/hive_service.dart';
+import 'package:food_mandu/features/payment/presentation/admin_payment_page.dart';
+import 'package:food_mandu/features/payment/presentation/user_payment_page.dart';
+import 'package:food_mandu/screen/login_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
 import 'package:food_mandu/core/services/storage/user_session_service.dart';
-import 'package:food_mandu/features/order/presentation/view_model/order_view_model.dart';
+
 import 'package:food_mandu/features/order/presentation/pages/my_order_pages.dart';
 import 'package:food_mandu/features/food_item/presentation/pages/my_food_items_pages.dart';
 import 'package:food_mandu/features/food_item/presentation/pages/report_food_items_pages.dart';
@@ -138,11 +142,22 @@ class ProfileScreen extends ConsumerWidget {
               // TODO: Navigate to Address Management
             },
           ),
+          // ================= PAYMENT =================
           ProfileTile(
             icon: Icons.payment_outlined,
             title: "Payment Methods",
             onTap: () {
-              // TODO: Navigate to Payment Methods
+              if (userRole == "admin") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AdminPaymentPage()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const UserPaymentPage()),
+                );
+              }
             },
           ),
           ProfileTile(
@@ -191,9 +206,21 @@ class ProfileScreen extends ConsumerWidget {
             icon: Icons.logout,
             title: "Logout",
             isLogout: true,
-            onTap: () {
-              // TODO: Implement logout
-            },
+            onTap: () async {
+           // 1️⃣ Call logout from AuthViewModel
+               await ref.read(authViewModelProvider.notifier).logout();
+
+       // 2️⃣ Navigate to Login screen and remove all routes
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => LoginScreen(
+                    hiveService: HiveService(),
+              ),
+           ),
+         (route) => false,
+       );
+      },
           ),
         ],
       ),

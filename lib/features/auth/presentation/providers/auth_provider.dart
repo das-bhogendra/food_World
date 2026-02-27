@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_mandu/core/services/storage/user_session_service.dart';
 import 'package:food_mandu/features/auth/domain/usecases/register_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/login_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/uploadphoto_usecase.dart';
@@ -100,6 +101,23 @@ class AuthViewModel extends Notifier<AuthState> {
       },
     );
   }
+  Future<void> logout() async {
+  state = state.copyWith(status: AuthStatus.loading);
+
+  try {
+    await ref.read(userSessionServiceProvider).clearUserSession();
+
+    state = const AuthState(
+      status: AuthStatus.unauthenticated,
+    );
+  } catch (e) {
+    state = state.copyWith(
+      status: AuthStatus.error,
+      errorMessage: "Logout failed",
+    );
+  }
+}
+  
 
   /// ================= UPLOAD PROFILE PHOTO =================
   Future<String?> uploadPhoto(File photo) async {
