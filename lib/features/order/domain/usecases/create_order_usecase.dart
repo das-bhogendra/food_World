@@ -15,7 +15,7 @@ class CreateOrderParams extends Equatable {
   final String userId;
   final List<FoodItem> foodItems; // ✅ Pass full objects now
   final double totalAmount;
-  final String status; // e.g., "pending", "completed"
+  final String status; // e.g., "pending", "confirmed", "delivered", "cancelled"
 
   const CreateOrderParams({
     required this.userId,

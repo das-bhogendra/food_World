@@ -1,5 +1,4 @@
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'package:food_mandu/core/constants/hive_table_constant.dart';
 import 'package:food_mandu/features/auth/data/models/auth_hive_model.dart';
 import 'package:food_mandu/features/order/data/models/order_hive_model.dart';
@@ -10,12 +9,14 @@ class HiveService {
   late Box<AuthHiveModel> _authBox;
   late Box<String> _sessionBox;
 
+  /// Initialize Hive and open boxes
   Future<void> init() async {
     await Hive.initFlutter();
 
     // Register adapters
     Hive.registerAdapter(AuthHiveModelAdapter());
-    // Register Order adapters - Required for order storage
+
+    // Register Order adapters
     Hive.registerAdapter(OrderItemHiveModelAdapter());
     Hive.registerAdapter(OrderHiveModelAdapter());
 
@@ -24,7 +25,9 @@ class HiveService {
     _sessionBox = await Hive.openBox<String>('session');
   }
 
+  // ------------------------------
   // Current user ID management
+  // ------------------------------
   String? get currentUserId => _sessionBox.get(_currentUserKey);
 
   set currentUserId(String? id) {
@@ -35,7 +38,9 @@ class HiveService {
     }
   }
 
+  // ------------------------------
   // User management methods
+  // ------------------------------
   Future<AuthHiveModel?> getCurrentUser() async {
     final userId = currentUserId;
     if (userId == null) return null;
@@ -67,6 +72,17 @@ class HiveService {
     await _authBox.put(user.authId, user);
   }
 
+  // ------------------------------
+  // Global clear all data (for shake logout)
+  // ------------------------------
+  Future<void> clearAllData() async {
+    await _authBox.clear();
+    await _sessionBox.clear();
+  }
+
+  // ------------------------------
+  // Close boxes
+  // ------------------------------
   Future<void> close() async {
     await _authBox.close();
     await _sessionBox.close();

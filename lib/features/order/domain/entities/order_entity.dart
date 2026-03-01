@@ -6,27 +6,40 @@ class OrderStatusConstants {
   static const String confirmed = 'confirmed';
   static const String delivered = 'delivered';
   static const String cancelled = 'cancelled';
+  static const String completed = 'completed';
 
+  /// Backend-aligned valid statuses
   static const List<String> validStatuses = [
     pending,
     confirmed,
     delivered,
     cancelled,
+    completed,
   ];
 
-  /// Normalize status input
-  /// Converts "confirm" -> "confirmed", "deliver" -> "delivered", etc.
+  /// Normalize status input safely
+  /// Converts minor typos to correct backend values
   static String normalizeStatus(String status) {
     final s = status.trim().toLowerCase();
 
-    // Auto-correct common typos
     if (s == 'pendin' || s == 'pendng') return pending;
 
-    if (s == 'confirm' || s == 'confrimed' || s == 'cnfirmed') return confirmed;
+    if (s == 'confirm' || s == 'confrimed' || s == 'cnfirmed') {
+      return confirmed;
+    }
 
-    if (s == 'deliver' || s == 'delivery' || s == 'delivred') return delivered;
+    if (s == 'deliver' || s == 'delivery' || s == 'delivred') {
+      return delivered;
+    }
 
-    if (s == 'cancel' || s == 'cancle' || s == 'cnacelled') return cancelled;
+    if (s == 'cancel' || s == 'cancle' || s == 'cnacelled') {
+      return cancelled;
+    }
+
+    // Auto-correct "complete" to "completed"
+    if (s == 'complete' || s == 'complet' || s == 'compleet') {
+      return completed;
+    }
 
     return s;
   }
@@ -57,7 +70,7 @@ class FoodItem extends Equatable {
     return FoodItem(
       id: (json['_id'] ?? '').toString(),
       name: (json['name'] ?? '').toString(),
-      price: (json['price'] as num).toDouble(),
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
       imageUrl: json['imageUrl'] as String?,
       quantity: (json['quantity'] as int?) ?? 1,
     );
@@ -90,10 +103,14 @@ class OrderEntity extends Equatable {
   factory OrderEntity.fromJson(Map<String, dynamic> json) {
     final userData = json['userId'];
 
+    final normalizedStatus = OrderStatusConstants.normalizeStatus(
+      (json['status'] ?? OrderStatusConstants.pending).toString(),
+    );
+
     return OrderEntity(
       id: (json['_id'] ?? '').toString(),
 
-      /// Sometimes backend returns:
+      /// Backend may return:
       /// userId: "xxxxx"
       /// or userId: { _id: "xxxxx" }
       userId: userData is Map
@@ -104,14 +121,15 @@ class OrderEntity extends Equatable {
           .map((e) => FoodItem.fromJson(e as Map<String, dynamic>))
           .toList(),
 
-      totalAmount: (json['totalAmount'] as num).toDouble(),
+      totalAmount: (json['totalAmount'] as num?)?.toDouble() ?? 0.0,
 
-      status: OrderStatusConstants.normalizeStatus(
-        (json['status'] ?? OrderStatusConstants.pending).toString(),
-      ),
+      status: OrderStatusConstants.isValidStatus(normalizedStatus)
+          ? normalizedStatus
+          : OrderStatusConstants.pending,
 
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
     );
   }
 
@@ -136,12 +154,18 @@ class OrderEntity extends Equatable {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
+    final normalizedStatus = status != null
+        ? OrderStatusConstants.normalizeStatus(status)
+        : this.status;
+
     return OrderEntity(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       foodItems: foodItems ?? this.foodItems,
       totalAmount: totalAmount ?? this.totalAmount,
-      status: status ?? this.status,
+      status: OrderStatusConstants.isValidStatus(normalizedStatus)
+          ? normalizedStatus
+          : this.status,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

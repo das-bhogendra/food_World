@@ -1,16 +1,33 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 
 class ApiEndpoints {
   ApiEndpoints._(); // Private constructor to prevent instantiation
 
   // ================= BASE =================
+  static const bool isPhysicalDevice = true;
+
   static String get baseUrl {
     if (kIsWeb) {
-      return 'http://172.25.0.222:5005/api/'; // Web
-    } else {
-      return 'http://10.0.2.2:5005/api'; // Android Emulator
+      return 'http://10.151.153.202:5005/api/';
     }
+
+    if (Platform.isAndroid) {
+      if (isPhysicalDevice) {
+        // Physical device
+        return 'http://172.26.0.20:5005/api/';
+      } else {
+        // Android emulator
+        return 'http://10.0.2.2:5005/api/';
+      }
+    }
+
+    // iOS Simulator
+    return 'http://localhost:5005/api/';
   }
+
+  // For logging/debugging
 
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
@@ -23,24 +40,24 @@ class ApiEndpoints {
   static const String userUploadPhoto = '/auth/profile'; // PUT /profile
 
   // ================= FOOD / ITEMS =================
-static const String foods = '/fooditems';
+  static const String foods = '/fooditems';
 
-/// CRUD
-static const String createFoodItem = '/fooditems';
-static String updateFoodItem(String id) => '/fooditems/$id';
-static String deleteFoodItem(String id) => '/fooditems/$id';
-static const String getAllFoodItems = '/fooditems';
-static String getFoodItemById(String id) => '/fooditems/$id';
+  /// CRUD
+  static const String createFoodItem = '/fooditems';
+  static String updateFoodItem(String id) => '/fooditems/$id';
+  static String deleteFoodItem(String id) => '/fooditems/$id';
+  static const String getAllFoodItems = '/fooditems';
+  static String getFoodItemById(String id) => '/fooditems/$id';
 
-/// Filters
-static String getFoodItemsByUser(String userId) => '/fooditems/user/$userId';
-static String getFoodItemsByType(String type) => '/fooditems/type/$type';
-static String foodByCategory(String categoryId) => '/fooditems/category/$categoryId';
+  /// Filters
+  static String getFoodItemsByUser(String userId) => '/fooditems/user/$userId';
+  static String getFoodItemsByType(String type) => '/fooditems/type/$type';
+  static String foodByCategory(String categoryId) =>
+      '/fooditems/category/$categoryId';
 
-/// Media upload
-static const String foodUploadPhoto = '/fooditems/upload/photo';
-static const String foodUploadVideo = '/fooditems/upload/video';
-
+  /// Media upload
+  static const String foodUploadPhoto = '/fooditems/upload/photo';
+  static const String foodUploadVideo = '/fooditems/upload/video';
 
   // ================= CATEGORY =================
   static const String categories = '/categories';
@@ -53,7 +70,8 @@ static const String foodUploadVideo = '/fooditems/upload/video';
   static String getcategoryById(String id) => '/categories/$id';
 
   /// Get categories added by a specific user
-  static String getCategoriesByUser(String userId) => '/categories/user/$userId';
+  static String getCategoriesByUser(String userId) =>
+      '/categories/user/$userId';
 
   // ================= ORDER =================
   static const String orders = '/orders';

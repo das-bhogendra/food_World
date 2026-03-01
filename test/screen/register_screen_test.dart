@@ -46,11 +46,10 @@ void main() {
       overrides: [
         RegisterUsecaseProvider.overrideWith((ref) => mockRegisterUsecase),
         LoginUsecaseProvider.overrideWith((ref) => mockLoginUsecase),
-        uploadPhotoUsecaseProvider.overrideWith((ref) => mockUploadPhotoUsecase),
+        uploadPhotoUsecaseProvider
+            .overrideWith((ref) => mockUploadPhotoUsecase),
       ],
     );
-
-
   });
 
   tearDown(() {
@@ -81,7 +80,8 @@ void main() {
       expect(find.text('Already have an account? Login'), findsOneWidget);
     });
 
-    testWidgets('should show error if required fields are empty', (tester) async {
+    testWidgets('should show error if required fields are empty',
+        (tester) async {
       await tester.pumpWidget(createTestWidget());
 
       // Ensure the button is visible
@@ -131,7 +131,9 @@ void main() {
           ))).called(1);
     });
 
-    testWidgets('should navigate to login page when already have account pressed', (tester) async {
+    testWidgets(
+        'should navigate to login page when already have account pressed',
+        (tester) async {
       await tester.pumpWidget(createTestWidget());
 
       // Ensure the button is visible

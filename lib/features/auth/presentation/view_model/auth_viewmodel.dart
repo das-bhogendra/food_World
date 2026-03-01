@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/features/auth/domain/usecases/login_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/register_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/uploadphoto_usecase.dart';
+import 'package:food_mandu/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:food_mandu/features/auth/presentation/state/auth_state.dart';
 
 /// ================= AUTH NOTIFIER =================
@@ -10,15 +11,18 @@ class AuthViewModel extends Notifier<AuthState> {
   final RegisterUsecase _registerUsecase;
   final LoginUsecase _loginUsecase;
   final UploadPhotoUsecase _uploadPhotoUsecase;
+  final LogoutUsecase _logoutUsecase;
 
   /// ✅ Constructor injection
   AuthViewModel({
     required RegisterUsecase registerUsecase,
     required LoginUsecase loginUsecase,
     required UploadPhotoUsecase uploadPhotoUsecase,
+    required LogoutUsecase logoutUsecase,
   })  : _registerUsecase = registerUsecase,
         _loginUsecase = loginUsecase,
-        _uploadPhotoUsecase = uploadPhotoUsecase;
+        _uploadPhotoUsecase = uploadPhotoUsecase,
+        _logoutUsecase = logoutUsecase;
 
   @override
   AuthState build() => const AuthState();
@@ -112,6 +116,30 @@ class AuthViewModel extends Notifier<AuthState> {
           uploadedPhotoUrl: url,
         );
         return url;
+      },
+    );
+  }
+
+  /// ================= LOGOUT =================
+  Future<void> logout() async {
+    state = state.copyWith(status: AuthStatus.loading);
+
+    final result = await _logoutUsecase.call();
+
+    result.fold(
+      (failure) {
+        state = state.copyWith(
+          status: AuthStatus.error,
+          errorMessage: failure.message,
+        );
+      },
+      (_) {
+        // Clear the auth entity and reset state
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          authEntity: null,
+          uploadedPhotoUrl: null,
+        );
       },
     );
   }

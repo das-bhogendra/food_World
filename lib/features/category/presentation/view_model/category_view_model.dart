@@ -6,6 +6,21 @@ import '../../../../core/services/storage/token_service.dart';
 import '../../domain/entities/category_entity.dart';
 import '../state/category_state.dart';
 
+/// Provider for Dio instance - can be overridden in tests
+final dioProvider = Provider<Dio>((ref) {
+  return Dio(
+    BaseOptions(
+      baseUrl: ApiEndpoints.baseUrl,
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    ),
+  );
+});
+
 final categoryViewModelProvider =
     NotifierProvider<CategoryViewModel, CategoryState>(
   () => CategoryViewModel(),
@@ -17,18 +32,7 @@ class CategoryViewModel extends Notifier<CategoryState> {
 
   @override
   CategoryState build() {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: ApiEndpoints.baseUrl,
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      ),
-    );
-
+    _dio = ref.read(dioProvider);
     _tokenService = ref.read(tokenServiceProvider);
 
     return const CategoryState();
@@ -67,9 +71,8 @@ class CategoryViewModel extends Notifier<CategoryState> {
         return;
       }
 
-      final categories = (data as List)
-          .map((json) => CategoryEntity.fromJson(json))
-          .toList();
+      final categories =
+          (data as List).map((json) => CategoryEntity.fromJson(json)).toList();
 
       state = state.copyWith(
         status: CategoryStatus.loaded,

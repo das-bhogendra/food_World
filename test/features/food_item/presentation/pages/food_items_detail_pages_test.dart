@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.dart';
-import 'package:food_mandu/features/food_item/presentation/pages/food_item_detail_page.dart';
-import 'package:mocktail/mocktail.dart';
-
-// =================== FAKE ENTITY ===================
-class FakeFoodItemEntity extends Fake implements FoodItemEntity {}
+import 'package:food_mandu/features/food_item/presentation/pages/food_items_detail_pages.dart';
 
 void main() {
   late FoodItemEntity availableFood;
@@ -16,8 +12,10 @@ void main() {
       id: '1',
       name: 'Pizza',
       addedBy: 'Admin',
+      type: FoodItemType.veg,
+      price: 10.99,
       isAvailable: true,
-      fullImageUrl: '', // empty to test placeholder
+      imageUrl: '', // empty to test placeholder
       description: 'Delicious cheese pizza',
     );
 
@@ -25,8 +23,10 @@ void main() {
       id: '2',
       name: 'Burger',
       addedBy: 'Admin',
+      type: FoodItemType.nonVeg,
+      price: 8.99,
       isAvailable: false,
-      fullImageUrl: '', // empty to test placeholder
+      imageUrl: '', // empty to test placeholder
       description: 'Juicy beef burger',
     );
   });

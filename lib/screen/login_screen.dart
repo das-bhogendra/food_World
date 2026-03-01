@@ -11,10 +11,9 @@ import 'register_screen.dart';
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
 import 'package:food_mandu/features/auth/presentation/state/auth_state.dart';
 
-
-
 class LoginScreen extends ConsumerStatefulWidget {
   final HiveService hiveService;
+
   const LoginScreen({super.key, required this.hiveService});
 
   @override
@@ -32,6 +31,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
+  /// Login function
   Future<void> _login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -47,6 +47,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
   }
 
+  /// Navigate to Register screen
   void _navigateToRegister() {
     Navigator.push(
       context,
@@ -60,15 +61,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
 
-    // Listen auth changes
+    // Listen for auth state changes
     ref.listen(authViewModelProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated && next.authEntity != null) {
         SnackbarUtils.showSuccess(context, "Login Successful");
 
-        // role निकाल्ने
         final role = next.authEntity!.role ?? 'user';
 
-        // Bottom navigation मा पठाउने
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -117,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             const SizedBox(height: 30),
 
-            // Email
+            // Email field
             CustomTextField(
               controller: _emailController,
               label: "Email",
@@ -126,7 +125,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             const SizedBox(height: 15),
 
-            // Password
+            // Password field
             CustomTextField(
               controller: _passwordController,
               label: "Password",

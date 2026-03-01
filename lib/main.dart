@@ -5,10 +5,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:food_mandu/core/providers/shared_prefs_provider.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
+import 'package:food_mandu/core/services/hive/food_items_hive_service.dart';
 import 'package:food_mandu/core/services/storage/user_session_service.dart';
 
 import 'package:food_mandu/features/auth/data/models/auth_hive_model.dart';
 import 'package:food_mandu/features/order/data/models/order_hive_model.dart';
+import 'package:food_mandu/features/food_item/data/models/food_items_hive_model.dart';
+import 'package:food_mandu/features/food_item/data/datasources/local/food_items_localdatasource.dart';
 
 import 'package:food_mandu/screen/splash_screen.dart';
 
@@ -18,27 +21,21 @@ void main() async {
   // 1️⃣ Initialize Hive
   await Hive.initFlutter();
 
-  // ✅ DEV ONLY: Delete old boxes (optional)
-  if (await Hive.boxExists('authBox')) {
-    await Hive.deleteBoxFromDisk('authBox');
-    print('Old authBox deleted for fresh start.');
-  }
-
-  if (await Hive.boxExists('orderBox')) {
-    await Hive.deleteBoxFromDisk('orderBox');
-    print('Old orderBox deleted for fresh start.');
-  }
-
   // 1b️⃣ Register Hive adapters
   Hive.registerAdapter(AuthHiveModelAdapter());
   Hive.registerAdapter(OrderItemHiveModelAdapter()); // ✅ IMPORTANT - Required for nested OrderItemHiveModel
   Hive.registerAdapter(OrderHiveModelAdapter()); // ✅ IMPORTANT
+  Hive.registerAdapter(FoodItemHiveModelAdapter()); // For offline food items
 
   // 1c️⃣ Open Hive boxes
   var authBox = await Hive.openBox<AuthHiveModel>('authBox');
   await Hive.openBox<OrderHiveModel>('orderBox'); // ✅ IMPORTANT
+  
+  // 1d️⃣ Initialize FoodItemHiveService for offline storage
+  final foodItemHiveService = FoodItemHiveService();
+  await foodItemHiveService.init();
 
-  // 1d️⃣ Read auth safely
+  // 1e️⃣ Read auth safely
   final auth = authBox.get('auth');
   final safeAuth = auth != null
       ? AuthHiveModel.safe(
@@ -68,6 +65,9 @@ void main() async {
         sharedPreferencesProvider.overrideWithValue(sharedPreferences),
         hiveServiceProvider.overrideWithValue(HiveService()),
         userSessionServiceProvider.overrideWithValue(userSessionService),
+        foodItemLocalDatasourceProvider.overrideWithValue(
+          FoodItemLocalDatasource(hiveService: foodItemHiveService),
+        ),
       ],
       child: const MyApp(),
     ),

@@ -9,9 +9,16 @@ import 'package:mocktail/mocktail.dart';
 // =================== MOCK ===================
 class MockOrderRepository extends Mock implements IOrderRepository {}
 
+// =================== FAKE ===================
+class FakeOrderEntity extends Fake implements OrderEntity {}
+
 void main() {
   late MockOrderRepository mockRepository;
   late UpdateOrderUsecase usecase;
+
+  setUpAll(() {
+    registerFallbackValue(FakeOrderEntity());
+  });
 
   setUp(() {
     mockRepository = MockOrderRepository();
@@ -41,7 +48,7 @@ void main() {
     userId: 'user_123',
     foodItems: tFoodItems,
     totalAmount: 28.5,
-    status: 'completed',
+    status: 'delivered',
     createdAt: createdAt,
     updatedAt: updatedAt,
   );
@@ -52,8 +59,7 @@ void main() {
       // Arrange
       when(() => mockRepository.updateOrder(any()))
           .thenAnswer((invocation) async {
-        final OrderEntity passedOrder =
-            invocation.positionalArguments.first;
+        final OrderEntity passedOrder = invocation.positionalArguments.first;
 
         return Right(passedOrder);
       });

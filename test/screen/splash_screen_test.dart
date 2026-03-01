@@ -2,22 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/core/providers/shared_prefs_provider.dart';
+import 'package:food_mandu/core/services/hive/hive_service.dart';
 import 'package:food_mandu/screen/onboarding_screen.dart';
 import 'package:food_mandu/screen/splash_screen.dart';
-import 'package:mocktail/mocktail.dart';
 
-class MockHiveService extends Mock implements HiveService {}
+// Fake HiveService for testing
+class FakeHiveService extends Fake implements HiveService {
+  @override
+  String? currentUserId;
+
+  @override
+  Future<void> init() async {}
+}
 
 void main() {
   late ProviderContainer container;
-  late MockHiveService mockHiveService;
+  late FakeHiveService fakeHiveService;
 
   setUp(() {
-    mockHiveService = MockHiveService();
+    fakeHiveService = FakeHiveService();
+    fakeHiveService.currentUserId = null;
 
     container = ProviderContainer(
       overrides: [
-        hiveServiceProvider.overrideWithValue(mockHiveService),
+        hiveServiceProvider.overrideWith((ref) => fakeHiveService),
       ],
     );
   });
@@ -43,7 +51,8 @@ void main() {
       expect(find.text('FoodWorld'), findsOneWidget);
     });
 
-    testWidgets('should navigate to OnboardingScreen after 2 seconds', (tester) async {
+    testWidgets('should navigate to OnboardingScreen after 2 seconds',
+        (tester) async {
       await tester.pumpWidget(createTestWidget());
 
       // Initially SplashScreen is displayed
