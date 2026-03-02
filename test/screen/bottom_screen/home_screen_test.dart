@@ -8,7 +8,7 @@ import 'package:food_mandu/features/food_item/presentation/state/food_items_stat
 import 'package:food_mandu/features/food_item/data/repositories/food_items_repository.dart';
 import 'package:food_mandu/features/food_item/domain/repositories/food_items_repository.dart';
 import 'package:food_mandu/features/cart/cart_provider.dart';
-import 'package:food_mandu/screen/bottom_screen/home_screen.dart';
+import 'package:food_mandu/features/dashboard/bottom_screen/home_screen.dart';
 import 'package:dartz/dartz.dart';
 
 class MockFoodItemsRepository extends Mock implements IFoodItemsRepository {}

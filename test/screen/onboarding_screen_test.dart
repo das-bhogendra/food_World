@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:food_mandu/screen/login_screen.dart';
+import 'package:food_mandu/features/auth/presentation/pages/login_screen.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,7 +10,7 @@ import 'package:food_mandu/features/auth/domain/usecases/login_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/register_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/uploadphoto_usecase.dart';
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
-import 'package:food_mandu/screen/onboarding_screen.dart';
+import 'package:food_mandu/features/onboarding/onboarding_screen.dart';
 
 
 class MockHiveService extends Mock implements HiveService {}

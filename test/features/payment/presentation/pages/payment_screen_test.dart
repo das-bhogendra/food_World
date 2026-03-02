@@ -7,7 +7,7 @@ import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.
 import 'package:food_mandu/features/payment/presentation/state/payment_state.dart';
 import 'package:food_mandu/features/payment/presentation/view_model/payment_view_model.dart';
 import 'package:food_mandu/features/payment/presentation/pages/payment_screen.dart';
-import 'package:food_mandu/theme/app_colors.dart';
+import 'package:food_mandu/app/theme/app_colors.dart';
 
 // ================= MOCK CLASSES =================
 class MockCartNotifier extends Mock implements CartNotifier {}

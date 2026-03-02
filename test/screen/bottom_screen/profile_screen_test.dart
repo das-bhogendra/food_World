@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:food_mandu/screen/bottom_screen/profile_screen.dart';
+import 'package:food_mandu/features/dashboard/bottom_screen/profile_screen.dart';
 import 'package:food_mandu/core/services/storage/user_session_service.dart';
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
 import 'package:food_mandu/features/auth/presentation/state/auth_state.dart';

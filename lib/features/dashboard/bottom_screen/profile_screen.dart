@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
 import 'package:food_mandu/core/services/shake_service.dart';
 import 'package:food_mandu/core/providers/theme_provider.dart';
-import 'package:food_mandu/screen/login_screen.dart';
-import 'package:food_mandu/theme/app_colors.dart';
+import 'package:food_mandu/features/auth/presentation/pages/login_screen.dart';
+import 'package:food_mandu/app/theme/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';

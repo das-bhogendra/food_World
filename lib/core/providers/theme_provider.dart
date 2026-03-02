@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:light/light.dart';
-import 'package:food_mandu/theme/theme.dart';
+import 'package:food_mandu/app/theme/theme.dart';
 
 final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
   return ThemeNotifier();

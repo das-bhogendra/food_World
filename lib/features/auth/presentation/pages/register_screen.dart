@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../core/services/hive/hive_service.dart';
-import '../widgets/custom_text_field.dart';
-import '../widgets/custom_button.dart';
-import '../core/utils/snackbar_utils.dart';
-import '../theme/app_colors.dart';
+import '../../../../core/services/hive/hive_service.dart';
+import '../../../../core/widgets/custom_text_field.dart';
+import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/utils/snackbar_utils.dart';
+import '../../../../app/theme/app_colors.dart';
 import 'login_screen.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';

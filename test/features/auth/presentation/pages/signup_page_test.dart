@@ -10,8 +10,8 @@ import 'package:food_mandu/features/auth/domain/usecases/login_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/uploadphoto_usecase.dart';
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
 import 'package:food_mandu/features/auth/presentation/view_model/auth_viewmodel.dart';
-import 'package:food_mandu/features/auth/presentation/pages/signup_page.dart';
-import 'package:food_mandu/features/auth/presentation/pages/login_page.dart';
+import 'package:food_mandu/features/auth/presentation/pages/signup_screen.dart';
+import 'package:food_mandu/features/auth/presentation/pages/login_screen.dart';
 
 class MockRegisterUsecase extends Mock implements RegisterUsecase {}
 class MockLoginUsecase extends Mock implements LoginUsecase {}

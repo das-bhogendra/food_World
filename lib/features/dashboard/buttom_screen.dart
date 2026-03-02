@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
 import 'package:food_mandu/features/cart/cart_provider.dart';
 
-import 'package:food_mandu/screen/bottom_screen/about/about_screen.dart';
-import 'package:food_mandu/screen/bottom_screen/cart_screen.dart';
-import 'package:food_mandu/screen/bottom_screen/home_screen.dart';
-import 'package:food_mandu/screen/bottom_screen/profile_screen.dart';
-import 'package:food_mandu/theme/app_colors.dart';
+import 'package:food_mandu/features/dashboard/bottom_screen/about/about_screen.dart';
+import 'package:food_mandu/features/dashboard/bottom_screen/cart_screen.dart';
+import 'package:food_mandu/features/dashboard/bottom_screen/home_screen.dart';
+import 'package:food_mandu/features/dashboard/bottom_screen/profile_screen.dart';
+import 'package:food_mandu/app/theme/app_colors.dart';
 
 class BottomScreenLayout extends ConsumerStatefulWidget {
   final String userRole;

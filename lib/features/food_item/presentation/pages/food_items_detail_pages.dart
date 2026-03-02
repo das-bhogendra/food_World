@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:food_mandu/theme/theme_extensions.dart';
-import 'package:food_mandu/theme/app_colors.dart';
+import 'package:food_mandu/app/theme/theme_extensions.dart';
+import 'package:food_mandu/app/theme/app_colors.dart';
 import 'package:food_mandu/core/utils/snackbar_utils.dart';
 import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.dart';
 

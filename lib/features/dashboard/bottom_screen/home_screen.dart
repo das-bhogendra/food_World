@@ -10,8 +10,8 @@ import 'package:food_mandu/features/food_item/presentation/state/food_items_stat
 import 'package:food_mandu/features/category/presentation/pages/my_category_page.dart';
 import 'package:food_mandu/features/order/presentation/pages/my_order_pages.dart';
 import 'package:food_mandu/features/cart/cart_provider.dart';
-import 'package:food_mandu/theme/app_colors.dart';
-import 'package:food_mandu/screen/bottom_screen/cart_screen.dart';
+import 'package:food_mandu/app/theme/app_colors.dart';
+import 'package:food_mandu/features/dashboard/bottom_screen/cart_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   final String userRole; // 'admin' or 'user'

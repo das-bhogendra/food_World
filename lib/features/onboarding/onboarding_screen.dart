@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
-import 'login_screen.dart';
+import '../auth/presentation/pages/login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final HiveService hiveService;

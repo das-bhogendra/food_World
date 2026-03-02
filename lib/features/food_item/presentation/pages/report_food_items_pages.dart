@@ -7,8 +7,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:food_mandu/features/food_item/presentation/notifier/food_item_notifier.dart';
 import 'package:food_mandu/features/food_item/presentation/state/food_items_state.dart';
 import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.dart';
-import 'package:food_mandu/theme/app_colors.dart';
-import 'package:food_mandu/theme/theme_extensions.dart';
+import 'package:food_mandu/app/theme/app_colors.dart';
+import 'package:food_mandu/app/theme/theme_extensions.dart';
 import '../../../../core/services/storage/user_session_service.dart';
 import '../../../../core/utils/snackbar_utils.dart';
 

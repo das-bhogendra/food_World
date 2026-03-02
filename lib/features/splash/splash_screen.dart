@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'onboarding_screen.dart';
+import '../onboarding/onboarding_screen.dart';
 import 'package:food_mandu/core/providers/shared_prefs_provider.dart';
 import 'package:food_mandu/core/providers/theme_provider.dart';
 import 'package:food_mandu/core/services/storage/user_session_service.dart';
-import 'package:food_mandu/screen/buttom_screen.dart';
+import 'package:food_mandu/features/dashboard/buttom_screen.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});

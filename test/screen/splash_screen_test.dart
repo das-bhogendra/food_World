@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/core/providers/shared_prefs_provider.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
-import 'package:food_mandu/screen/onboarding_screen.dart';
-import 'package:food_mandu/screen/splash_screen.dart';
+import 'package:food_mandu/features/onboarding/onboarding_screen.dart';
+import 'package:food_mandu/features/splash/splash_screen.dart';
 
 // Fake HiveService for testing
 class FakeHiveService extends Fake implements HiveService {

@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/core/providers/shared_prefs_provider.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
 import 'package:food_mandu/core/services/shake_service.dart';
-import 'package:food_mandu/screen/splash_screen.dart';
-import 'package:food_mandu/screen/login_screen.dart';
-import 'package:food_mandu/theme/theme.dart';
+import 'package:food_mandu/features/splash/splash_screen.dart';
+import 'package:food_mandu/features/auth/presentation/pages/login_screen.dart';
+import 'package:food_mandu/app/theme/theme.dart';
 
 void appMain() async {
   WidgetsFlutterBinding.ensureInitialized();

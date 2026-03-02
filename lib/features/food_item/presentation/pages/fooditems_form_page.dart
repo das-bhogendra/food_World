@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.dart';
 import 'package:food_mandu/features/food_item/presentation/notifier/food_item_notifier.dart';
-import 'package:food_mandu/theme/app_colors.dart';
+import 'package:food_mandu/app/theme/app_colors.dart';
 import 'food_gallery_pages.dart'; // Your FoodGalleryPage
 
 class FoodItemFormPage extends ConsumerStatefulWidget {

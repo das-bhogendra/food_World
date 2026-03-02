@@ -5,7 +5,7 @@ import 'package:food_mandu/features/payment/presentation/state/payment_state.dar
 import 'package:food_mandu/features/payment/presentation/view_model/payment_view_model.dart';
 import 'package:food_mandu/features/payment/presentation/widgets/order_summary_widget.dart';
 import 'package:food_mandu/features/cart/cart_provider.dart';
-import 'package:food_mandu/theme/app_colors.dart';
+import 'package:food_mandu/app/theme/app_colors.dart';
 
 class PaymentScreen extends ConsumerStatefulWidget {
   const PaymentScreen({super.key});

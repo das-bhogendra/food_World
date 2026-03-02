@@ -5,8 +5,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:dartz/dartz.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
-import 'package:food_mandu/features/auth/presentation/pages/login_page.dart';
-import 'package:food_mandu/features/auth/presentation/pages/signup_page.dart';
+import 'package:food_mandu/features/auth/presentation/pages/login_screen.dart';
+import 'package:food_mandu/features/auth/presentation/pages/signup_screen.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
 import 'package:food_mandu/features/auth/domain/usecases/login_usecase.dart';
 import 'package:food_mandu/features/auth/domain/usecases/register_usecase.dart';

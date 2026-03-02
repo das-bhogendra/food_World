@@ -14,7 +14,7 @@ import 'package:food_mandu/features/order/data/models/order_hive_model.dart';
 import 'package:food_mandu/features/food_item/data/models/food_items_hive_model.dart';
 import 'package:food_mandu/features/food_item/data/datasources/local/food_items_localdatasource.dart';
 
-import 'package:food_mandu/screen/splash_screen.dart';
+import 'package:food_mandu/features/splash/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
