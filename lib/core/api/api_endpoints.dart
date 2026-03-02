@@ -16,7 +16,7 @@ class ApiEndpoints {
     if (Platform.isAndroid) {
       if (isPhysicalDevice) {
         // Physical device
-        return 'http://172.26.0.20:5005/api/';
+        return 'http://192.168.1.67:5005/api/';
       } else {
         // Android emulator
         return 'http://10.0.2.2:5005/api/';

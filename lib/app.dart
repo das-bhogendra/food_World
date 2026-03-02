@@ -49,8 +49,9 @@ class _RootWrapperState extends ConsumerState<RootWrapper> with WidgetsBindingOb
   }
 
   void _startShakeListener() {
+    print('[APP] Starting shake listener...');
     _shakeService.startListening(() {
-      debugPrint('Shake detected - triggering logout');
+      print('[APP] Shake detected callback!');
       if (!_shakeTriggered) {
         _shakeTriggered = true;
         _handleShakeLogout();
@@ -96,7 +97,14 @@ class _RootWrapperState extends ConsumerState<RootWrapper> with WidgetsBindingOb
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onDoubleTap: _toggleTheme, // Double-tap to toggle theme
+      onDoubleTap: _toggleTheme,
+      onLongPress: () {
+        print('[APP] Manual shake test!');
+        if (!_shakeTriggered) {
+          _shakeTriggered = true;
+          _handleShakeLogout();
+        }
+      },
       child: MaterialApp(
         navigatorKey: _navigatorKey,
         debugShowCheckedModeBanner: false,

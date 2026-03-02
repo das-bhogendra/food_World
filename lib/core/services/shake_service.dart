@@ -2,54 +2,67 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:sensors_plus/sensors_plus.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final shakeServiceProvider = Provider<ShakeService>((ref) {
-  return ShakeService();
-});
 
 class ShakeService {
-  StreamSubscription<UserAccelerometerEvent>? _subscription;
+  StreamSubscription<AccelerometerEvent>? _subscription;
   bool _isListening = false;
 
   DateTime? _lastShakeTime;
-  static const double _shakeThreshold = 3.0;
-  static const int _shakeCooldownMs = 1500;
+
+  static const double _shakeThreshold = 15.0;
+  static const int _shakeCooldownMs = 500;
+
   void startListening(void Function() onShakeDetected) {
     if (_isListening) return;
-    
-    debugPrint('Starting shake listener...');
-    
-    try {
-      _subscription = userAccelerometerEventStream().listen(
-        (UserAccelerometerEvent event) {
-          final double acceleration =
-              sqrt(event.x * event.x + event.y * event.y + event.z * event.z);
 
-          debugPrint('Shake check - Accel: $acceleration');
+    print('[ShakeService] Starting shake listener...');
+
+    try {
+      print('[ShakeService] Trying to start accelerometer...');
+      
+      final stream = accelerometerEventStream(
+        samplingPeriod: const Duration(milliseconds: 100),
+      );
+      
+      _subscription = stream.listen(
+        (AccelerometerEvent event) {
+          final double acceleration = sqrt(
+            event.x * event.x + 
+            event.y * event.y + 
+            event.z * event.z,
+          );
+
+          if (kDebugMode) {
+            print('[ShakeService] Accel: ${acceleration.toStringAsFixed(2)}');
+          }
 
           if (acceleration > _shakeThreshold) {
             final now = DateTime.now();
 
             if (_lastShakeTime == null ||
-                now.difference(_lastShakeTime!).inMilliseconds > _shakeCooldownMs) {
+                now.difference(_lastShakeTime!).inMilliseconds >=
+                    _shakeCooldownMs) {
+
               _lastShakeTime = now;
-              debugPrint('Shake detected! Acceleration: $acceleration');
+
+              print('[ShakeService] Shake detected! Accel: ${acceleration.toStringAsFixed(2)}');
+
               onShakeDetected();
             }
           }
         },
         onError: (error) {
-          debugPrint('Shake sensor error: $error');
+          print('[ShakeService] Sensor error: $error');
         },
         onDone: () {
-          debugPrint('Shake sensor stream done');
+          print('[ShakeService] Stream closed');
         },
       );
+
       _isListening = true;
-      debugPrint('Shake listener started successfully');
+      print('[ShakeService] Listener started successfully');
     } catch (e) {
-      debugPrint('Failed to start shake listener: $e');
+      print('[ShakeService] Failed to start: $e');
     }
   }
 
@@ -58,6 +71,7 @@ class ShakeService {
     _subscription = null;
     _isListening = false;
     _lastShakeTime = null;
+    debugPrint('[ShakeService] Listener stopped');
   }
 
   void dispose() {

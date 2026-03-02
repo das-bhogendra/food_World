@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
-
+import 'package:food_mandu/core/services/shake_service.dart';
 import 'package:food_mandu/screen/login_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -13,15 +13,59 @@ import 'package:food_mandu/features/order/presentation/pages/my_order_pages.dart
 import 'package:food_mandu/features/food_item/presentation/pages/my_food_items_pages.dart';
 import 'package:food_mandu/features/food_item/presentation/pages/report_food_items_pages.dart';
 
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  final ShakeService _shakeService = ShakeService();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startShakeDetection();
+    });
+  }
+
+  void _startShakeDetection() {
+    _shakeService.startListening(() {
+      _handleShakeLogout();
+    });
+  }
+
+  Future<void> _handleShakeLogout() async {
+    if (!mounted) return;
+    
+    await ref.read(authViewModelProvider.notifier).logout();
+
+    if (!mounted) return;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) => LoginScreen(
+          hiveService: HiveService(),
+        ),
+      ),
+      (route) => false,
+    );
+  }
+
+  @override
+  void dispose() {
+    _shakeService.stopListening();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final session = ref.watch(userSessionServiceProvider);
 
-    // Get user role and ID
     final userRole = session.userRole ?? 'user';
     final userId = session.userId ?? '';
 
@@ -41,7 +85,6 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  // ================= HEADER =================
   Widget _buildHeader(
       BuildContext context, ThemeData theme, WidgetRef ref, UserSessionService session) {
     return Container(
@@ -75,7 +118,6 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  // ================= IMAGE PICKER =================
   void _showImageSourceSheet(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
@@ -121,7 +163,6 @@ class ProfileScreen extends ConsumerWidget {
     await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
   }
 
-  // ================= OPTIONS =================
   Widget _buildProfileOptions(BuildContext context, WidgetRef ref, String userRole, String userId) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -141,13 +182,11 @@ class ProfileScreen extends ConsumerWidget {
               // TODO: Navigate to Address Management
             },
           ),
-          // ================= PAYMENT =================
           
           ProfileTile(
             icon: Icons.receipt_long_outlined,
             title: "My Orders",
             onTap: () {
-              // Navigate to MyOrders screen
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -190,10 +229,8 @@ class ProfileScreen extends ConsumerWidget {
             title: "Logout",
             isLogout: true,
             onTap: () async {
-           // 1️⃣ Call logout from AuthViewModel
                await ref.read(authViewModelProvider.notifier).logout();
 
-       // 2️⃣ Navigate to Login screen and remove all routes
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -201,8 +238,8 @@ class ProfileScreen extends ConsumerWidget {
                     hiveService: HiveService(),
               ),
            ),
-         (route) => false,
-       );
+          (route) => false,
+        );
       },
           ),
         ],
@@ -211,7 +248,6 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-// ================= PROFILE TILE =================
 class ProfileTile extends StatelessWidget {
   final IconData icon;
   final String title;
