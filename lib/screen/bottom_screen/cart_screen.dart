@@ -4,6 +4,8 @@ import 'package:food_mandu/features/cart/cart_provider.dart';
 import 'package:food_mandu/features/cart/presentation/widgets/cart_item_card.dart';
 import 'package:food_mandu/features/order/domain/entities/order_entity.dart';
 import 'package:food_mandu/features/order/presentation/view_model/order_view_model.dart';
+import 'package:food_mandu/features/payment/presentation/pages/payment_screen.dart';
+import 'package:food_mandu/theme/app_colors.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -27,7 +29,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     final total = subtotal + deliveryFee;
 
     return Scaffold(
-      backgroundColor: const Color(0xffFFF7F3),
+      backgroundColor: AppColors.scaffoldBackground,
       appBar: AppBar(
         title: Text(
           "My Cart",
@@ -35,7 +37,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.orange,
+        backgroundColor: AppColors.primary,
       ),
       body: cartItems.isEmpty
           ? const Center(child: Text("Your cart is empty"))
@@ -68,52 +70,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   delivery: deliveryFee,
                   total: total,
                   isLoading: ref.watch(orderViewModelProvider).isCreating,
-                  onCheckout: () async {
+                  onCheckout: () {
                     if (cartItems.isEmpty) return;
 
-                    // 1️⃣ Prepare FoodItems for order
-                    final foodItems = cartItems.map((c) {
-                      final f = c.foodItem;
-                      return FoodItem(
-                        id: f.id,
-                        name: f.name,
-                        price: f.price,
-                        imageUrl: f.imageUrl,
-                        quantity: c.quantity,
-                      );
-                    }).toList();
-
-                    // 2️⃣ Create new OrderEntity
-                    final newOrder = OrderEntity(
-                      id: '',
-                      userId: widget.userId,
-                      foodItems: foodItems,
-                      totalAmount: total,
-                      status: "pending",
-                      createdAt: DateTime.now(),
-                      updatedAt: DateTime.now(),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PaymentScreen(),
+                      ),
                     );
-
-                    // 3️⃣ Create order via ViewModel
-                    await ref
-                        .read(orderViewModelProvider.notifier)
-                        .createOrder(newOrder);
-
-                    // 4️⃣ Clear cart
-                    cartNotifier.clearCart();
-
-                    // 5️⃣ ✅ REFRESH USER ORDERS
-                    await ref
-                        .read(orderViewModelProvider.notifier)
-                        .getOrdersByUser(widget.userId);
-
-                    // 6️⃣ Show success message
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Order placed successfully!")),
-                      );
-                    }
                   },
                 ),
               ],
@@ -150,7 +115,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             height: 50,
             child: ElevatedButton(
               onPressed: isLoading ? null : onCheckout,
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.secondary,
+                foregroundColor: Colors.white,
+              ),
               child: isLoading
                   ? const CircularProgressIndicator(color: Colors.white)
                   : Text(

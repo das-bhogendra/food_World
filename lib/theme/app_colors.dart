@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Main colors
-  static const Color primary = Color(0xFF6A1B9A);
+  // Main colors - Maroon theme (consistent across all screens)
+  static const Color primary = Color(0xFF8F3B3B);
+  static const Color primaryDark = Color(0xFF6B2A2A);
+  static const Color primaryLight = Color(0xFFAB5A5A);
   static const Color secondary = Color(0xFFFFA000);
   static const Color error = Color(0xFFD32F2F);
 
@@ -70,7 +72,7 @@ class AppColors {
   );
 
   static Gradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF8E24AA), Color(0xFF6A1B9A)],
+    colors: [Color(0xFFAB5A5A), Color(0xFF8F3B3B), Color(0xFF6B2A2A)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

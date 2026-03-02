@@ -4,6 +4,7 @@ import '../core/services/hive/hive_service.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 import '../core/utils/snackbar_utils.dart';
+import '../theme/app_colors.dart';
 import 'login_screen.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
@@ -91,7 +92,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 66, 31, 31),
+        backgroundColor: AppColors.primary,
         title: const Text("Register", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
@@ -101,9 +102,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            const Text("Sign Up", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+            const Text("Sign Up", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
             const SizedBox(height: 10),
-            const Text("Sign up to start using FoodWorld", style: TextStyle(color: Colors.black54)),
+            const Text("Sign up to start using FoodWorld", style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
             const SizedBox(height: 30),
 
             // Full Name
@@ -124,12 +125,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
             // Password
             CustomTextField(controller: _passwordController, label: "Password", hint: "Enter password", obscureText: true),
-            const SizedBox(height: 30),
+            const SizedBox(height: 15),
 
             // confirmPassword
 
             // Password
-            CustomTextField(controller: _confirmPasswordController, label: " confirmPassword", hint: "confirm password", obscureText: true),
+            CustomTextField(controller: _confirmPasswordController, label: "Confirm Password", hint: "Confirm password", obscureText: true),
             const SizedBox(height: 30),
 
 
@@ -137,7 +138,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             CustomButton(
               title: authState.status == AuthStatus.loading ? "Creating..." : "Create Account",
               onPressed: authState.status == AuthStatus.loading ? null : _handleRegister,
-              color: const Color.fromARGB(255, 42, 15, 15),
+              color: AppColors.primary,
               textColor: Colors.white,
             ),
 
@@ -145,7 +146,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             Center(
               child: TextButton(
                 onPressed: _navigateToLogin,
-                child: const Text("Already have an account? Login"),
+                child: Text("Already have an account? Login", style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600)),
               ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_mandu/core/services/storage/user_session_service.dart';
 import 'package:food_mandu/features/cart/cart_provider.dart';
 import 'package:food_mandu/features/payment/data/repositories/payment_repository.dart';
 import 'package:food_mandu/features/payment/domain/repositories/payment_repository.dart';
@@ -11,14 +12,17 @@ final paymentViewModelProvider =
 
 class PaymentViewModel extends Notifier<PaymentState> {
   late final IPaymentRepository _repository;
+  late final UserSessionService _userSession;
 
   @override
   PaymentState build() {
     _repository = ref.read(paymentRepositoryProvider);
+    _userSession = ref.read(userSessionServiceProvider);
     return PaymentState.initial();
   }
 
-  // ✅ Updated to use CartItem (food based)
+  String get _userId => _userSession.getCurrentUserId();
+
   void initPaymentData(List<CartItem> items, double totalAmount) {
     final itemsData = items
         .map((item) => {
@@ -44,6 +48,7 @@ class PaymentViewModel extends Notifier<PaymentState> {
     state = state.copyWith(status: PaymentStatus.processing);
 
     final result = await _repository.createPayment(
+      userId: _userId,
       items: state.cartItems,
       totalAmount: state.totalAmount,
       paymentMethod: paymentMethod,

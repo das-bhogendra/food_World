@@ -5,6 +5,7 @@ import 'package:food_mandu/core/services/hive/hive_service.dart';
 import 'package:food_mandu/core/services/shake_service.dart';
 import 'package:food_mandu/core/providers/theme_provider.dart';
 import 'package:food_mandu/screen/login_screen.dart';
+import 'package:food_mandu/theme/app_colors.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
@@ -71,7 +72,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final userId = session.userId ?? '';
 
     return Scaffold(
-      backgroundColor: const Color(0xffFFF7F3),
+      backgroundColor: AppColors.scaffoldBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -90,9 +91,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       BuildContext context, ThemeData theme, WidgetRef ref, UserSessionService session) {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Color(0xffB33B2E),
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
       ),
       child: Column(
         children: [
@@ -105,7 +106,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ? NetworkImage(session.profilePicture!)
                   : null,
               child: session.profilePicture == null
-                  ? const Icon(Icons.camera_alt, size: 35, color: Color(0xffB33B2E))
+                  ? Icon(Icons.camera_alt, size: 35, color: AppColors.primary)
                   : null,
             ),
           ),

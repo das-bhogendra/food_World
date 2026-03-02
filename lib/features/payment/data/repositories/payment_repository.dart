@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/core/error/failures.dart';
 import 'package:food_mandu/features/payment/data/datasources/remote/payment_remote_datasource.dart';
-import 'package:food_mandu/features/payment/data/datasources/remote/models/payment_api_model.dart';
 import 'package:food_mandu/features/payment/domain/entities/payment_entity.dart';
 import 'package:food_mandu/features/payment/domain/repositories/payment_repository.dart';
 
@@ -16,23 +15,27 @@ final paymentRepositoryProvider = Provider<IPaymentRepository>((ref) {
 class PaymentRepositoryImpl implements IPaymentRepository {
   final PaymentRemoteDatasource remoteDatasource;
 
-  PaymentRepositoryImpl({required this.remoteDatasource});
+  PaymentRepositoryImpl({
+    required this.remoteDatasource,
+  });
 
   @override
   Future<Either<Failure, PaymentEntity>> createPayment({
+    required String userId,
     required List<Map<String, dynamic>> items,
     required double totalAmount,
     required String paymentMethod,
     String? transactionId,
   }) async {
     try {
-      final model = await remoteDatasource.createPayment(
-        items: items,
+      final payment = await remoteDatasource.createPayment(
+        userId: userId,
+        foodItems: items,
         totalAmount: totalAmount,
         paymentMethod: paymentMethod,
         transactionId: transactionId,
       );
-      return Right(model.toEntity());
+      return Right(payment.toEntity());
     } on DioException catch (e) {
       return Left(
           ApiFailure(message: e.response?.data['message'] ?? 'Payment failed'));
@@ -42,10 +45,9 @@ class PaymentRepositoryImpl implements IPaymentRepository {
   }
 
   @override
-  Future<Either<Failure, PaymentEntity>> getPaymentStatus(
-      String orderId) async {
+  Future<Either<Failure, PaymentEntity>> getPaymentByOrder(String orderId) async {
     try {
-      final model = await remoteDatasource.getPaymentStatus(orderId);
+      final model = await remoteDatasource.getPaymentByOrder(orderId);
       return Right(model.toEntity());
     } on DioException catch (e) {
       return Left(ApiFailure(

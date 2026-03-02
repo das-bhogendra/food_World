@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
+import 'package:food_mandu/features/cart/cart_provider.dart';
 
 import 'package:food_mandu/screen/bottom_screen/about/about_screen.dart';
 import 'package:food_mandu/screen/bottom_screen/cart_screen.dart';
 import 'package:food_mandu/screen/bottom_screen/home_screen.dart';
 import 'package:food_mandu/screen/bottom_screen/profile_screen.dart';
+import 'package:food_mandu/theme/app_colors.dart';
 
 class BottomScreenLayout extends ConsumerStatefulWidget {
   final String userRole;
@@ -46,28 +48,61 @@ class _BottomScreenLayoutState extends ConsumerState<BottomScreenLayout> {
             _selectedIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
+            icon: _buildCartIcon(),
             label: 'Cart',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.info),
             label: 'About',
           ),
         ],
-        backgroundColor: Colors.blue,
+        backgroundColor: AppColors.primary,
         selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.black,
+        unselectedItemColor: Colors.white70,
       ),
+    );
+  }
+
+  Widget _buildCartIcon() {
+    final cartState = ref.watch(cartProvider);
+    return Stack(
+      children: [
+        const Icon(Icons.shopping_cart),
+        if (cartState.items.isNotEmpty)
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              constraints: const BoxConstraints(
+                minWidth: 16,
+                minHeight: 16,
+              ),
+              child: Text(
+                '${cartState.items.length}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

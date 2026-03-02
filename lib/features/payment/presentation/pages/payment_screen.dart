@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/features/payment/presentation/state/payment_state.dart';
 import 'package:food_mandu/features/payment/presentation/view_model/payment_view_model.dart';
@@ -16,6 +17,12 @@ class PaymentScreen extends ConsumerStatefulWidget {
 class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   String selectedPaymentMethod = 'cash_on_delivery';
   bool isProcessing = false;
+  
+  final _cardNumberController = TextEditingController();
+  final _cardHolderController = TextEditingController();
+  final _expiryController = TextEditingController();
+  final _cvvController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -27,6 +34,15 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
             cartState.total,
           );
     });
+  }
+
+  @override
+  void dispose() {
+    _cardNumberController.dispose();
+    _cardHolderController.dispose();
+    _expiryController.dispose();
+    _cvvController.dispose();
+    super.dispose();
   }
 
   @override
@@ -71,6 +87,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
             const SizedBox(height: 24),
             _buildPaymentMethods(),
             const SizedBox(height: 24),
+            if (selectedPaymentMethod == 'online') _buildCardForm(),
             if (paymentState.status == PaymentStatus.failure)
               _buildError(paymentState.errorMessage),
           ],
@@ -118,12 +135,277 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           const Divider(),
           _buildPaymentOption(
             'online',
-            'Online Payment',
-            'Pay now using card/UPI/bank',
+            'Credit/Debit Card',
+            'Pay securely with your card',
             Icons.credit_card,
+          ),
+          const Divider(),
+          _buildPaymentOption(
+            'upi',
+            'UPI Payment',
+            'Pay using UPI ID',
+            Icons.qr_code,
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildCardForm() {
+    return Form(
+      key: _formKey,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? AppColors.darkSurface
+              : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.credit_card, color: AppColors.primary),
+                const SizedBox(width: 8),
+                Text(
+                  'Card Details',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _buildCardPreview(),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _cardNumberController,
+              keyboardType: TextInputType.number,
+              decoration: _inputDecoration('Card Number', Icons.credit_card),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter card number';
+                }
+                if (value.replaceAll(' ', '').length < 16) {
+                  return 'Please enter valid card number';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                setState(() {});
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _cardHolderController,
+              textCapitalization: TextCapitalization.characters,
+              decoration: _inputDecoration('Card Holder Name', Icons.person),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter card holder name';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: _expiryController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      _ExpiryDateInputFormatter(),
+                    ],
+                    decoration: _inputDecoration('Expiry (MM/YY)', Icons.calendar_today),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Required';
+                      }
+                      if (!RegExp(r'^\d{2}/\d{2}$').hasMatch(value)) {
+                        return 'Use MM/YY';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: TextFormField(
+                    controller: _cvvController,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    decoration: _inputDecoration('CVV', Icons.lock),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Required';
+                      }
+                      if (value.length < 3) {
+                        return 'Invalid CVV';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.green.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.verified_user, color: Colors.green, size: 20),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Your payment is secure with SSL encryption',
+                      style: TextStyle(color: Colors.green, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardPreview() {
+    final cardNumber = _cardNumberController.text.isEmpty 
+        ? '•••• •••• •••• ••••' 
+        : _formatCardNumber(_cardNumberController.text);
+    final holderName = _cardHolderController.text.isEmpty 
+        ? 'CARD HOLDER' 
+        : _cardHolderController.text.toUpperCase();
+    final expiry = _expiryController.text.isEmpty 
+        ? 'MM/YY' 
+        : _expiryController.text;
+
+    return Container(
+      height: 200,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.4),
+            blurRadius: 15,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Icon(Icons.contactless, color: Colors.white, size: 40),
+              Image.network(
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/200px-Visa_Inc._logo.svg.png',
+                height: 30,
+                color: Colors.white,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Text('VISA', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
+                },
+              ),
+            ],
+          ),
+          const Spacer(),
+          Text(
+            cardNumber,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 2,
+            ),
+          ),
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('CARD HOLDER', style: TextStyle(color: Colors.white70, fontSize: 10)),
+                  Text(
+                    holderName,
+                    style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('EXPIRES', style: TextStyle(color: Colors.white70, fontSize: 10)),
+                  Text(
+                    expiry,
+                    style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatCardNumber(String text) {
+    final buffer = StringBuffer();
+    for (int i = 0; i < text.length && i < 16; i++) {
+      if (i > 0 && i % 4 == 0) buffer.write(' ');
+      buffer.write(text[i]);
+    }
+    return buffer.toString();
+  }
+
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon, color: AppColors.primary),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.error),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.error, width: 2),
+      ),
+      filled: true,
+      fillColor: Colors.grey.shade50,
     );
   }
 
@@ -277,19 +559,35 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     );
   }
 
-  Future<void> _processOrderSuccess(double totalAmount) async {
+  Future<void> _processPayment(double totalAmount) async {
+    if (selectedPaymentMethod == 'online') {
+      if (!_formKey.currentState!.validate()) {
+        return;
+      }
+    }
+
+    setState(() {
+      isProcessing = true;
+    });
+
     try {
+      String transactionId;
+      if (selectedPaymentMethod == 'online') {
+        transactionId = 'CARD_${DateTime.now().millisecondsSinceEpoch}';
+      } else if (selectedPaymentMethod == 'upi') {
+        transactionId = 'UPI_${DateTime.now().millisecondsSinceEpoch}';
+      } else {
+        transactionId = 'COD_${DateTime.now().millisecondsSinceEpoch}';
+      }
+
       final success =
           await ref.read(paymentViewModelProvider.notifier).processPayment(
                 paymentMethod: selectedPaymentMethod,
+                transactionId: transactionId,
               );
 
       if (success && mounted) {
-        try {
-          ref.read(cartProvider.notifier).clearCart();
-        } catch (e) {
-          // Ignore - cart might already be cleared by backend
-        }
+        ref.read(cartProvider.notifier).clearCart();
         ref.read(paymentViewModelProvider.notifier).reset();
 
         showDialog(
@@ -306,7 +604,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
             content: Text(
               selectedPaymentMethod == 'cash_on_delivery'
                   ? 'Your order has been placed successfully. You will pay Rs ${totalAmount.toStringAsFixed(2)} on delivery.'
-                  : 'Your payment was successful. Your order has been placed.',
+                  : 'Your payment of Rs ${totalAmount.toStringAsFixed(2)} was successful. Your order has been placed.',
             ),
             actions: [
               TextButton(
@@ -326,19 +624,34 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           SnackBar(content: Text('Error processing order: $e')),
         );
       }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isProcessing = false;
+        });
+      }
     }
   }
+}
 
-  Future<void> _processPayment(double totalAmount) async {
-    // Cash on delivery logic
-    setState(() {
-      isProcessing = true;
-    });
-    await _processOrderSuccess(totalAmount);
-    if (mounted) {
-      setState(() {
-        isProcessing = false;
-      });
+class _ExpiryDateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text.replaceAll('/', '');
+    if (text.length > 4) return oldValue;
+
+    final buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      if (i == 2) buffer.write('/');
+      buffer.write(text[i]);
     }
+
+    return TextEditingValue(
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(offset: buffer.length),
+    );
   }
 }

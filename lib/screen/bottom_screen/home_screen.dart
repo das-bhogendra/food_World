@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:food_mandu/features/cart/presentation/cart_screen.dart';
 import 'package:food_mandu/features/food_item/domain/entities/food_items_entity.dart';
 import 'package:food_mandu/features/food_item/presentation/notifier/food_item_notifier.dart';
 import 'package:food_mandu/features/food_item/presentation/pages/admin_fooditems_pages.dart';
@@ -11,6 +10,8 @@ import 'package:food_mandu/features/food_item/presentation/state/food_items_stat
 import 'package:food_mandu/features/category/presentation/pages/my_category_page.dart';
 import 'package:food_mandu/features/order/presentation/pages/my_order_pages.dart';
 import 'package:food_mandu/features/cart/cart_provider.dart';
+import 'package:food_mandu/theme/app_colors.dart';
+import 'package:food_mandu/screen/bottom_screen/cart_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   final String userRole; // 'admin' or 'user'
@@ -31,9 +32,9 @@ class HomeScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      backgroundColor: const Color(0xffFFF7F3),
+      backgroundColor: AppColors.scaffoldBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xffB33B2E),
+        backgroundColor: AppColors.primary,
         title: const Text("Food World"),
         actions: [
           Stack(
@@ -131,9 +132,9 @@ class HomeScreen extends ConsumerWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Color(0xffB33B2E),
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
       ),
       child: Column(
         children: [
@@ -196,7 +197,7 @@ class HomeScreen extends ConsumerWidget {
         height: 100,
         margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
-          color: Colors.orange.shade200,
+          color: const Color.fromARGB(255, 91, 17, 28),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(

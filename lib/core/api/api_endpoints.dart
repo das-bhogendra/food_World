@@ -89,4 +89,16 @@ class ApiEndpoints {
 
   /// Update status
   static String updateOrderStatus(String id) => '/orders/$id/status';
+
+  // ================= PAYMENT =================
+  static const String payments = '/payment';
+
+  /// Create payment (creates order with payment)
+  static const String createPayment = '/payment/create';
+
+  /// Get payment by order ID
+  static String getPaymentByOrder(String orderId) => '/payment/$orderId';
+
+  /// Update payment status
+  static String updatePaymentStatus(String orderId) => '/payment/$orderId/status';
 }

@@ -6,6 +6,7 @@ import '../core/services/hive/hive_service.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 import '../core/utils/snackbar_utils.dart';
+import '../theme/app_colors.dart';
 import 'register_screen.dart';
 
 import 'package:food_mandu/features/auth/presentation/providers/auth_provider.dart';
@@ -84,7 +85,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(145, 61, 61, 1),
+        backgroundColor: AppColors.primary,
         centerTitle: true,
         title: const Text(
           "Login",
@@ -102,17 +103,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           children: [
             const SizedBox(height: 20),
             const Text(
-              "Welcome login page",
+              "Welcome back",
               style: TextStyle(
-                fontSize: 26,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 10),
             const Text(
               "Login to continue to FoodWorld",
-              style: TextStyle(fontSize: 16, color: Colors.black54),
+              style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 30),
 
@@ -140,7 +141,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ? "Logging in..."
                   : "Login",
               onPressed: authState.status == AuthStatus.loading ? null : _login,
-              color: const Color.fromRGBO(143, 59, 59, 1),
+              color: AppColors.primary,
               textColor: Colors.white,
             ),
             const SizedBox(height: 20),
@@ -149,11 +150,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Center(
               child: TextButton(
                 onPressed: _navigateToRegister,
-                child: const Text(
+                child: Text(
                   "Don't have an account? Register",
                   style: TextStyle(
                     fontSize: 15,
-                    color: Colors.black,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
