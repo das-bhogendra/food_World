@@ -53,6 +53,7 @@ dependencies:
   # Image Caching
   cached_network_image: ^3.3.1
   sensors_plus: ^7.0.0
+  light: ^5.0.0
 
 dev_dependencies:
   flutter_test:

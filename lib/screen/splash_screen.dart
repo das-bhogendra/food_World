@@ -2,15 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'onboarding_screen.dart';
 import 'package:food_mandu/core/providers/shared_prefs_provider.dart';
+import 'package:food_mandu/core/providers/theme_provider.dart';
 import 'package:food_mandu/core/services/storage/user_session_service.dart';
 import 'package:food_mandu/screen/buttom_screen.dart';
 
-// Splash screen for FoodWorld App
-class SplashScreen extends ConsumerWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(themeProvider.notifier).startLightSensor();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final hiveService = ref.watch(hiveServiceProvider);
     final userSession = ref.watch(userSessionServiceProvider);
 

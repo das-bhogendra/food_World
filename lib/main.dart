@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:food_mandu/core/providers/shared_prefs_provider.dart';
+import 'package:food_mandu/core/providers/theme_provider.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
 import 'package:food_mandu/core/services/hive/food_items_hive_service.dart';
 import 'package:food_mandu/core/services/storage/user_session_service.dart';
@@ -74,15 +75,19 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeProvider);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'FoodMandu Test',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: themeMode,
       home: const SplashScreen(),
     );
   }

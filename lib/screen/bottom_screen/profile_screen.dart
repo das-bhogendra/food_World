@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_mandu/core/services/hive/hive_service.dart';
 import 'package:food_mandu/core/services/shake_service.dart';
+import 'package:food_mandu/core/providers/theme_provider.dart';
 import 'package:food_mandu/screen/login_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -222,6 +223,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             title: "Settings",
             onTap: () {
               // TODO: Navigate to Settings
+            },
+          ),
+          Consumer(
+            builder: (context, ref, child) {
+              final themeMode = ref.watch(themeProvider);
+              return ProfileTile(
+                icon: themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode,
+                title: themeMode == ThemeMode.dark ? "Light Mode" : "Dark Mode",
+                onTap: () {
+                  ref.read(themeProvider.notifier).toggleTheme();
+                },
+              );
             },
           ),
           ProfileTile(
